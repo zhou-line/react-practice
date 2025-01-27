@@ -29,3 +29,8 @@ npm install copy-webpack-plugin -D
 > cross-env：运行跨平台设置和使用环境变量的脚本，兼容各系统的设置环境变量的包
 >
 > webpack.DefinePlugin：webpack内置的插件,可以为业务代码注入环境变量
+> 
+npm i cross-env -D
+
+### 构建耗时
+npm i speed-measure-webpack-plugin -D

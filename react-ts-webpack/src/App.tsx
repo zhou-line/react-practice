@@ -1,8 +1,11 @@
 import React from 'react'
-import './App.css'
+import Screen from "./components/Screen";
 
 function App() {
-    return <h2>Hello East_White</h2>
+    return (
+        <>
+            <Screen></Screen>
+        </>
+    )
 }
-
 export default App
