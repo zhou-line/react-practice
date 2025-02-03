@@ -1,11 +1,14 @@
-import React, { useState } from 'react'
-import * as styles from './index.module.css'
+import React, { useState } from "react";
+import styles from './index.module.css'; // 正确导入 CSS 模块
 
 function Screen() {
-    const [ count, setCounts ] = useState('')
+    const [count, setCounts] = useState('');
+    console.log(styles)
+
     const onChange = (e: any) => {
-        setCounts(e.target.value)
-    }
+        setCounts(e.target.value);
+    };
+
     return (
         <>
             <h2>124459995543</h2>
@@ -15,6 +18,7 @@ function Screen() {
             <p>非受控组件</p>
             <input type="text" />
         </>
-    )
+    );
 }
-export default Screen
+
+export default Screen;

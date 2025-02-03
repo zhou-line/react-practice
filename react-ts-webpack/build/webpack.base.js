@@ -4,7 +4,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
+const ESLintPlugin = require('eslint-webpack-plugin');
+
 const isDev = process.env.NODE_ENV === 'development' // 是否是开发模式
+console.log(process.env)
 
 module.exports = {
     // join 和 resolve 的区别
@@ -44,6 +47,12 @@ module.exports = {
                         options: {
                             modules: {
                                 localIdentName: '[local]__[hash:base64:5]',
+                                // css-loader 提供了 modules.namedExport 选项，当它被设置为 true 时，CSS Modules 会使用 named exports 的方式导出类名，而不是 default exports。
+
+                                // 也取决于 esModule 选项的值。如果 esModule 选项的值为 true，则此值也将为 true，否则将为 false
+                                // Named Export (命名导出): 每个 CSS 类会作为一个具名导出，例如 export const container = “unique-hash-class-name”。
+                                // Default Export (默认导出): 所有 CSS 类会作为一个对象被默认导出，例如 export default { container: “unique-hash-class-name” }。
+                                namedExport: false
                             },
                             sourceMap: isDev,
                             importLoaders: 1
@@ -62,6 +71,7 @@ module.exports = {
                         options: {
                             modules: {
                                 localIdentName: '[local]__[hash:base64:5]',
+                                namedExport: false
                             },
                             sourceMap: isDev,
                             importLoaders: 2
@@ -119,7 +129,10 @@ module.exports = {
         // 把 process.env.BASE_ENV注入到业务代码里面,就可以通过该环境变量设置对应环境的接口地址和其他数据
         new webpack.DefinePlugin({
             'process.env.BASE_ENV': JSON.stringify(process.env.BASE_ENV)
-        })
+        }),
+        new ESLintPlugin({
+            extensions: ['js', 'jsx', 'ts', 'tsx'], // 检查的文件扩展名
+        }),
     ],
 
     resolve: {
