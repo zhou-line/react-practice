@@ -2,13 +2,8 @@ import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, Int
 // import { MessageBox, Message } from 'element-ui'
 // import store from '@/store'
 // import { getToken } from '@/utils/auth'
-//
-// 定义响应数据的泛型类型
-interface ApiResponse<T> {
-    code: number;
-    message: string;
-    data: T;
-}
+
+
 // create an axios instance
 const service: AxiosInstance = axios.create({
     baseURL: '', // url = base url + request url

@@ -1,0 +1,77 @@
+.menu {
+    width: 100%;
+    display: flex;
+}
+
+.pic-btn:hover .anticon{
+    color: #ffffff !important;
+}
+
+.pic-btn:disabled:hover .anticon,
+.pic-btn[disabled]:hover .anticon{
+    color:#848482 !important;
+}
+
+
+.pic-btn:hover .anticon svg path {
+    fill: #ffffff !important;
+}
+
+.pic-btn:disabled:hover .anticon svg path,
+.pic-btn[disabled]:hover .anticon svg path {
+    fill: #848482 !important;
+}
+
+.menu-left {
+    float: right;
+}
+
+.menu-right {
+    float: right;
+    margin-right: 20px;
+}
+
+.align-menu {
+    font-size: 18px;
+    margin-top: -4px;
+}
+
+
+.pic-model .ant-modal-content {
+    background-color: #222127;
+    color: #848484;
+}
+
+.pic-model .ant-modal-header {
+    background-color: #222127;
+    color: #848484;
+    border-bottom: 1px solid #0D0D0E;
+    border-radius: 2px 2px 0 0;
+}
+
+.pic-model .ant-modal-title {
+    color: #848484;
+}
+
+.pic-model .ant-modal-body {
+    background-color: #222127;
+    color: #848484;
+}
+
+.pic-model .ant-modal-footer {
+    background-color: #222127;
+    border-top: 1px solid #0D0D0E;
+    border-radius: 0 0 2px 2px;
+}
+
+.pic-model .ant-form-item-label > label {
+    color: #848484;
+}
+
+.pic-model .ant-form-item-control-input-content {
+    color: #848484;
+}
+
+.pic-model .ant-radio-wrapper {
+    color: #848484;
+}

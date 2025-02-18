@@ -1,11 +1,17 @@
-import React from 'react'
-import Screen from "./components/Screen";
+import React, {useEffect} from 'react'
+import {HashRouter} from 'react-router-dom';
+import "./App.css"
+import RouterView from "./routes";
 
-function App() {
+const App: React.FC = () => {
+    useEffect(() => {
+        document.title = JSON.stringify(process.env.REACT_APP_PROJECT_NAME).replaceAll("\"", "");
+    }, []);
+
     return (
-        <>
-            <Screen></Screen>
-        </>
+        <HashRouter>
+            <RouterView/>
+        </HashRouter>
     )
 }
 export default App

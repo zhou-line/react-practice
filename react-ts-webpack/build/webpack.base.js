@@ -7,6 +7,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development' // 是否是开发模式
+
 console.log(process.env)
 
 module.exports = {
@@ -128,7 +129,8 @@ module.exports = {
         }),
         // 把 process.env.BASE_ENV注入到业务代码里面,就可以通过该环境变量设置对应环境的接口地址和其他数据
         new webpack.DefinePlugin({
-            'process.env.BASE_ENV': JSON.stringify(process.env.BASE_ENV)
+            'process.env.BASE_ENV': JSON.stringify(process.env.BASE_ENV),
+            'process.env.REACT_APP_PROJECT_NAME': JSON.stringify("西南大学课堂教学智能分析系统")
         }),
         new ESLintPlugin({
             extensions: ['js', 'jsx', 'ts', 'tsx'], // 检查的文件扩展名

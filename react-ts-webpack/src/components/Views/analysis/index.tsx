@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import styles from './index.module.css'; // 正确导入 CSS 模块
-
-function Screen() {
+const Analysis = () => {
     const [count, setCounts] = useState('');
-    console.log(styles)
 
     const onChange = (e: any) => {
         setCounts(e.target.value);
@@ -11,8 +8,6 @@ function Screen() {
 
     return (
         <>
-            <h2>124459995543</h2>
-            <p className={styles.title}>受控组件11</p>
             <input type="text" value={count} onChange={onChange} />
             <br />
             <p>非受控组件</p>
@@ -21,4 +16,4 @@ function Screen() {
     );
 }
 
-export default Screen;
+export default Analysis;

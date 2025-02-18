@@ -3,7 +3,7 @@
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "typeRoots": ["./node_modules/@types"],
-    "types": [], // 确保 TypeScript 从根目录加载类型
+    "types": ["node"], // 确保 TypeScript 从根目录加载类型
     "allowJs": false,
     "skipLibCheck": false,
     "esModuleInterop": false,
