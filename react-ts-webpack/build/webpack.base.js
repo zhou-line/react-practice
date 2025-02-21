@@ -8,8 +8,6 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development' // 是否是开发模式
 
-console.log(process.env)
-
 module.exports = {
     // join 和 resolve 的区别
     // __dirname返回当前文件所在的绝对路径
@@ -35,51 +33,51 @@ module.exports = {
                 test: /.(ts|tsx)$/,
                 use: ['thread-loader', 'babel-loader']
             },
-            //  loader执行顺序是从右往左,从下往上的
-            //  匹配到css文件后先用css-loader解析css
-            //  最后借助style-loader把css插入到头部style标签中
             {
-                test: /.css$/, //匹配所有的 css 文件
+                test: /\.scss$/, //匹配所有的 scss 文件
                 include: [path.resolve(__dirname, '../src')],
                 use: [
                     isDev ? 'style-loader' : MiniCssExtractPlugin.loader, // 开发环境使用style-looader,打包模式抽离css
                     {
                         loader: 'css-loader',
                         options: {
-                            modules: {
-                                localIdentName: '[local]__[hash:base64:5]',
-                                // css-loader 提供了 modules.namedExport 选项，当它被设置为 true 时，CSS Modules 会使用 named exports 的方式导出类名，而不是 default exports。
-
-                                // 也取决于 esModule 选项的值。如果 esModule 选项的值为 true，则此值也将为 true，否则将为 false
-                                // Named Export (命名导出): 每个 CSS 类会作为一个具名导出，例如 export const container = “unique-hash-class-name”。
-                                // Default Export (默认导出): 所有 CSS 类会作为一个对象被默认导出，例如 export default { container: “unique-hash-class-name” }。
-                                namedExport: false
-                            },
-                            sourceMap: isDev,
-                            importLoaders: 1
-                        },
-                    },
-                    'postcss-loader'
-                ]
-            },
-            {
-                test: /.less$/, //匹配所有的 less 文件
-                include: [path.resolve(__dirname, '../src')],
-                use: [
-                    isDev ? 'style-loader' : MiniCssExtractPlugin.loader, // 开发环境使用style-looader,打包模式抽离css
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: {
-                                localIdentName: '[local]__[hash:base64:5]',
-                                namedExport: false
-                            },
+                            // modules: {
+                            //     localIdentName: '[local]__[hash:base64:5]',
+                            //     namedExport: false
+                            // },
                             sourceMap: isDev,
                             importLoaders: 2
                         },
                     },
                     'postcss-loader',
-                    'less-loader'
+                    'sass-loader'
+                ]
+            },
+            //  loader执行顺序是从右往左,从下往上的
+            //  匹配到css文件后先用css-loader解析css
+            //  最后借助style-loader把css插入到头部style标签中
+            {
+                test: /\.css$/, //匹配所有的 css 文件
+                include: [path.resolve(__dirname, '../src')],
+                use: [
+                    isDev ? 'style-loader' : MiniCssExtractPlugin.loader, // 开发环境使用style-looader,打包模式抽离css
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            // modules: {
+                            //     localIdentName: '[local]__[hash:base64:5]',
+                            //     // css-loader 提供了 modules.namedExport 选项，当它被设置为 true 时，CSS Modules 会使用 named exports 的方式导出类名，而不是 default exports。
+                            //
+                            //     // 也取决于 esModule 选项的值。如果 esModule 选项的值为 true，则此值也将为 true，否则将为 false
+                            //     // Named Export (命名导出): 每个 CSS 类会作为一个具名导出，例如 export const container = “unique-hash-class-name”。
+                            //     // Default Export (默认导出): 所有 CSS 类会作为一个对象被默认导出，例如 export default { container: “unique-hash-class-name” }。
+                            //     namedExport: false
+                            // },
+                            sourceMap: isDev,
+                            importLoaders: 1
+                        },
+                    },
+                    'postcss-loader'
                 ]
             },
             // 预处理图片
@@ -139,6 +137,10 @@ module.exports = {
 
     resolve: {
         extensions: ['.js', '.tsx', '.ts'],
+        // 设置别名
+        alias: {
+            '@': path.join(__dirname, '../src')
+        },
         // 查找第三方模块只在本项目的node_modules中查找
         modules: [path.resolve(__dirname, '../node_modules')],
     },

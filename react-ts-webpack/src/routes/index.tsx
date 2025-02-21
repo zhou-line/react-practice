@@ -3,7 +3,7 @@ import React from 'react';
 import {useRoutes} from "react-router-dom";
 import Design from "../components/Layout";
 import Home from "../components/Views/home";
-import Page404 from "../components/Views/404";
+import Page404 from "../components/Views/404/404";
 import User from "../components/Views/user";
 import Login from "../components/Views/login";
 import Notice from "../components/Views/notice";
@@ -20,7 +20,6 @@ const RouterView = () => {
             children: [
                 {
                     index: true, // index设置为true 变成默认的二级路由
-                    path: 'home',
                     element: <Home/>
                 }, {
                     path: 'notice',
