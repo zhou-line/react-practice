@@ -1,7 +1,7 @@
 import React from "react";
 import image404 from "@/assets/404_images/404.png";
 import cloudImage from "@/assets/404_images/404_cloud.png";
-import "./404.scss"
+import "./index.scss"
 
 const Page404 = () => {
     const message = 'The webmaster said that you can not enter this page...';
@@ -25,7 +25,7 @@ const Page404 = () => {
                         <div className="bullshit__info">Please check that the URL you entered is correct, or click the
                             button below to return to the homepage.
                         </div>
-                        <a href="" className="bullshit__return-home">Back to home</a>
+                        <a href="/" className="bullshit__return-home">Back to home</a>
                     </div>
                 </div>
             </div>

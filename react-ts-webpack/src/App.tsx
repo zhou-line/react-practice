@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react'
 import {HashRouter} from 'react-router-dom';
-import "./App.css"
-import RouterView from "./routes";
+import {RouterView} from "./routes";
 
 const App: React.FC = () => {
     useEffect(() => {

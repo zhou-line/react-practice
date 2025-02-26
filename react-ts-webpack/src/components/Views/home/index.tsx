@@ -4,7 +4,7 @@ function Home() {
 
     return (
         <div>
-            <NavLink to={{pathname:'/404'}}>404</NavLink>
+            <NavLink to={{pathname:'/404'}}>4042111111111111111111</NavLink>
         </div>
     );
 }
