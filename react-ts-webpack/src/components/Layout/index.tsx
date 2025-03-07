@@ -6,8 +6,11 @@ import Sidebar from "./Sidebar";
 import Container from "./Main";
 
 const Design = () => {
+    
     return (
-        <Layout style={{ minHeight: '100vh' }}>
+        <Layout style={{
+            minHeight: '100vh',
+        }}>
             <Navbar/>
             <Layout>
                 <Sidebar/>

@@ -7,8 +7,9 @@ import {
     LockOutlined
 } from "@ant-design/icons";
 import {useLocation, useNavigate} from "react-router-dom";
-import {setRole} from "@/store/actions/playerAction";
+import {setAuth} from "@/store/actions/adminAction";
 import {useDispatch} from "react-redux";
+import { getToken, setToken } from "@/utils/auth";
 
 type FieldType = {
     username?: string;
@@ -25,7 +26,10 @@ const Login = () => {
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
         console.log('Success:', values);
-        dispatch(setRole(true))
+        setToken('21312')
+        const token = getToken()
+        console.log(location)
+        dispatch(setAuth(token))
         if (location.state) {
             navigate(location.state?.from.pathname);
         } else {
@@ -56,14 +60,14 @@ const Login = () => {
                     name="username"
                     rules={[{required: true, message: 'Please input your username!'}]}
                 >
-                    <Input size="large" prefix={<UserOutlined />} placeholder="Username" />
+                    <Input size="large" prefix={<UserOutlined />} placeholder="Username" autoComplete="password"/>
                 </Form.Item>
 
                 <Form.Item<FieldType>
                     name="password"
                     rules={[{required: true, message: 'Please input your password!'}]}
                 >
-                    <Input size="large" prefix={<LockOutlined />} type="password" placeholder="Password" />
+                    <Input size="large" prefix={<LockOutlined />} type="password" placeholder="Password" autoComplete="current-password" />
                 </Form.Item>
 
                 <Form.Item>

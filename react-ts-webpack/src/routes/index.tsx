@@ -31,7 +31,8 @@ export const baseRoutes: RouteConfig[] = [
         children: [
             {
                 path: "", // index在RouteObject中默认为 false | undefined，索引路由是隐含的，不需要设置 index 属性为 true， 变成默认的二级路由
-                element: <Home/>
+                element: <Home/>,
+                auth: true
             }, {
                 path: 'notice',
                 element: <Notice/>,
@@ -39,15 +40,18 @@ export const baseRoutes: RouteConfig[] = [
             },
             {
                 path: 'analysis',
-                element: <Analysis/>
+                element: <Analysis/>,
+                auth: true
             },
             {
                 path: 'resources',
-                element: <Resources/>
+                element: <Resources/>,
+                auth: true
             },
             {
                 path: 'user',
-                element: <User/>
+                element: <User/>,
+                auth: true
             }
         ]
     },
@@ -57,7 +61,8 @@ export const baseRoutes: RouteConfig[] = [
     },
     {
         path:"/annotation/:userId",
-        element:<Home></Home>
+        element:<Home></Home>,
+        auth: true
     },
     {
         path:"/404",

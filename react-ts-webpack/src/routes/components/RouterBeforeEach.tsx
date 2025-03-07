@@ -10,11 +10,9 @@ const getCurrentRouterMap = (routers: RouteConfig[], path: string): RouteConfig 
         // 父路由
         if(router.path == path) return router;
         // 子路由
-        console.log(router.children)
         if(router.children) {
             path = path.replace("/", "")
             const childRouter = getCurrentRouterMap(router.children, path)
-            console.log((childRouter))
             if(childRouter) return childRouter;
         }
     }
@@ -22,15 +20,16 @@ const getCurrentRouterMap = (routers: RouteConfig[], path: string): RouteConfig 
 }
 
 export const RouterBeforeEach = ({children}: any) => {
-    const role= useSelector<RootState, number>(state => state.player.role)
+    const token = useSelector<RootState, string>(state => state.admin.auth)
     const location = useLocation();
     const navigate = useNavigate();
+
     useEffect(() => {
         const router = getCurrentRouterMap(baseRoutes, location.pathname)
         const origin = location.pathname || '/login';
-        if(!role && router.auth) {
+        if(token && router.auth) {
             navigate(origin)
         }
-    }, [role, navigate, location.pathname]);
+    }, [token, location.pathname, navigate]);
     return children
 }

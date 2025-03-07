@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {useDispatch} from "react-redux";
-import {setRole} from "@/store/actions/playerAction";
+import {setAuth} from "@/store/actions/adminAction";
 const Notice = () => {
     const [count, setCounts] = useState('');
 
@@ -17,7 +17,7 @@ const Notice = () => {
             <input type="text" value={count} onChange={onChange} />
             <br />
             <p>非受控组件</p>
-            <a onClick={() => dispatch(setRole(false))} >2222222222</a>
+            <a onClick={() => dispatch(setAuth(''))} >2222222222</a>
         </>
     );
 }
