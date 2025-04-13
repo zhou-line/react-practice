@@ -1,0 +1,30 @@
+// src/components/Views/home/index.scss
+@mixin card {
+    position: relative;
+    padding: 18px 12px 0;
+    width: 100%;
+    height: 100%;
+    background: #001529;
+    border-radius: 8px;
+    
+    // 确保图表容器具有最小高度
+    min-height: 325px;
+    
+    // 添加过渡效果
+    transition: all 0.3s ease;
+}
+
+.home-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    .home-info-row {
+        @include card;
+    }
+
+    .charts-row {
+        .chart-card {
+            @include card;
+        }
+    }
+}

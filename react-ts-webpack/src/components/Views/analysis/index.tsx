@@ -1,23 +1,63 @@
-import React, { useState } from "react";
-import {useDispatch} from "react-redux";
-import {setAuth} from "@/store/actions/adminAction";
+import React from "react";
+import { Button, Form, Input, InputNumber, Select } from "antd";
+import DataTable from "@/components/Common/dataTable";
+
+const currentStyle = {
+    color: '#ffffff',
+};
 
 const Analysis = () => {
-    const dispatch = useDispatch()
-    const [count, setCounts] = useState('');
 
-    const onChange = (e: any) => {
-        setCounts(e.target.value);
-    };
-
+    const [form] = Form.useForm();
+  
+  
     return (
-        <>
-            <input type="text" value={count} onChange={onChange} />
-            <br />
-            <p>非受控组件</p>
-            <input type="text" />
-            <a onClick={() => dispatch(setAuth(''))} >2222222222</a>
-        </>
+      <div>
+        <Form
+            layout='inline'
+            form={form}
+        >
+            <Form.Item 
+                label={<span style={currentStyle}>Username</span>}
+                name="layout"
+            >
+                <Select/>
+            </Form.Item>
+            <Form.Item 
+                 label={<span style={currentStyle}>Username</span>}
+                name="layout"
+            >
+                <Select/>
+            </Form.Item>
+            <Form.Item 
+                 label={<span style={currentStyle}>Username</span>}
+                name="layout"
+            >
+                <Select/>
+            </Form.Item>
+            <Form.Item 
+                label={<span style={currentStyle}>Username</span>}
+            >
+                <Input/>
+            </Form.Item>
+            <Form.Item
+                label={<span style={currentStyle}>Username</span>}
+            >
+                <InputNumber min={1} max={10} defaultValue={3} />
+            </Form.Item>
+            <Form.Item
+                label={<span style={currentStyle}>Username</span>}
+            >
+                <InputNumber min={1} max={10} defaultValue={3} />
+            </Form.Item>
+            <Form.Item>
+                <Button type="primary">Submit</Button>
+            </Form.Item>
+        </Form>
+        <br/>
+
+        <DataTable/>
+      </div>
     );
 }
 

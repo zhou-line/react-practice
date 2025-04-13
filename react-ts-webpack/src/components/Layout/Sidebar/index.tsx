@@ -13,10 +13,16 @@ import { Layout, Menu } from 'antd';
 import { useDispatch, useSelector } from "react-redux";
 import {RootState} from "@/store/store";
 import { setMenuKey } from "@/store/actions/adminAction";
+import "./index.scss";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 const { Sider } = Layout
+
+interface Props {
+    collapsed: boolean,
+    onCollapse: (value: boolean) => void,
+}
 
 const items: MenuItem[] = [
     { key: 'home', icon: <HomeOutlined />, label: (<NavLink to="">首页</NavLink>) },
@@ -27,16 +33,12 @@ const items: MenuItem[] = [
     { key: 'login', icon: <PoweroffOutlined />, label: (<NavLink to={"/login"} >退出登录</NavLink>) },
 ];
 
-const Sidebar = () => {
-    const [collapsed, setCollapsed] = useState(false);
+const Sidebar = (props: Props) => {
+    const [collapsed, setCollapsed] = useState(window.innerWidth <= 976);
     const menuKey = useSelector<RootState, string>(state => state.admin.menuKey)
     const [selectKey, setSelectKey] = useState(menuKey)
     const dispatch = useDispatch();
     const location = useLocation();
-
-    const toggleCollapsed = (value: boolean) => {
-        setCollapsed(value);
-    };
 
     useEffect(() => {
         if (location.state) {
@@ -45,13 +47,21 @@ const Sidebar = () => {
         }
     }, [dispatch, location])
 
+    useEffect(() => {
+        setCollapsed(props.collapsed)
+    }, [props.collapsed])
+
     const getMenuItem = (event: any) => {
         dispatch(setMenuKey(event.key === 'login' ? 'home' : event.key))
     }
 
     return (
-        <Sider collapsible collapsed={collapsed} onCollapse={(value) => toggleCollapsed(value)}>
-            <div className="demo-logo-vertical" />
+        <Sider 
+            collapsible 
+            collapsed={collapsed} 
+            onCollapse={(value) => props.onCollapse(value)}
+            className="app-sider"
+        >
             <Menu
                 defaultSelectedKeys={[selectKey]}
                 mode="inline"

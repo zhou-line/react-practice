@@ -22,6 +22,12 @@ export interface RouteConfig {
     auth?: boolean;
     children?: RouteConfig[];
     redirect?: string;
+    roles?: string[];  // 添加角色权限控制
+    meta?: {
+        title?: string;
+        icon?: React.ReactNode;
+        keepAlive?: boolean;
+    };
 }
 
 export const baseRoutes: RouteConfig[] = [

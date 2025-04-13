@@ -5,3 +5,27 @@
   justify-content: center;
   align-items: center;
 }
+
+@mixin flex-layout {
+  display: flex;
+  flex-direction: column;
+  
+  &.horizontal {
+      flex-direction: row;
+  }
+  
+  &.center {
+      justify-content: center;
+      align-items: center;
+  }
+  
+  &.space-between {
+      justify-content: space-between;
+  }
+}
+
+.container {
+  @include flex-layout;
+  gap: 20px;
+  padding: 24px;
+}

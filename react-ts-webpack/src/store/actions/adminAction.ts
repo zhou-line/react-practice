@@ -4,6 +4,7 @@ export const setAuth = (auth: string) => {
         payload: auth
     };
 };
+
 export const setMenuKey = (menuKey: string) => {
     return {
         type: 'SET_MENU_KEY',

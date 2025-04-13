@@ -1,4 +1,5 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
+import { getToken, removeToken } from './auth';
 // import { MessageBox, Message } from 'element-ui'
 // import store from '@/store'
 // import { getToken } from '@/utils/auth'
@@ -16,6 +17,10 @@ const service: AxiosInstance = axios.create({
 service.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
         // do something before request is sent
+        const token = getToken();
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
 
         // if (store.getters.token) {
         //     // let each request carry token
@@ -47,8 +52,16 @@ service.interceptors.response.use(
     (response: AxiosResponse) => {
         const res = response.data
 
+        if (res.code === 401) {
+            // token 过期或无效
+            removeToken();
+            window.location.href = `/login?redirect=${window.location.pathname}`;
+            return Promise.reject(new Error('认证失败，请重新登录'));
+        }
+
         // if the custom code is not 200, it is judged as an error.
         if (res.code !== 200) {
+            return Promise.reject(new Error(res.message || '请求失败'));
             // Message({
             //     message: res.msg || 'Error',
             //     type: 'error',

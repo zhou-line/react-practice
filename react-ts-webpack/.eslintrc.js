@@ -19,6 +19,8 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': 'off', // 允许不显式定义函数返回类型
         'react/react-in-jsx-scope': 'off', // React 17+ 不需要在每个文件中显式引入 React
         '@typescript-eslint/no-explicit-any': 'off', // 禁用 no-explicit-any 规则
+        'react-hooks/exhaustive-deps': 'off', // 禁用 exhaustive-deps 规则
+        
     },
     settings: {
         react: {

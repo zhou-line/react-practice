@@ -1,6 +1,24 @@
-.head-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #ffffff;
+.navbar {
+    position: sticky;
+    width: 100%;
+    z-index: 1000;
+    top: 0;
+    
+    &-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+        color: #ffffff;
+    }
+    
+    &-right {
+        display: flex;
+        align-items: center;
+        color: #ffffff;
+    }
+}
+
+.ant-layout-header {
+    padding: 0 24px;
 }

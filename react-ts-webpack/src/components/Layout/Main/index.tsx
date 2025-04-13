@@ -1,34 +1,22 @@
 import React from "react";
-import {Layout, theme} from "antd";
+import {Layout} from "antd";
 import {Outlet} from "react-router-dom";
+import "./index.scss";
 
 const { Content } = Layout;
 
+// 优化 src/components/Layout/Main/index.tsx
 const Container = () => {
-    const {
-        token: { 
-            borderRadiusLG,
-        },
-    } = theme.useToken();
-      
-    const containerStyle =  {
-        backgroundColor: '#1a1e34',
-    }
-
-    const contentStyle = {
-        margin: '24px 16px',
-        padding: 24,
-        backgroundColor: '#001529',
-        borderRadius: borderRadiusLG,
-    }
-
+    
     return (
-        <Layout style={containerStyle}>
-            <Content style={contentStyle}>
-                <Outlet/>
-           </Content>
+        <Layout className="main-container">
+            <Content className="main-content">
+                <div className="content-wrapper">
+                    <Outlet/>
+                </div>  
+            </Content>
         </Layout>
-    )
-}
+    );
+};
 
 export default Container;

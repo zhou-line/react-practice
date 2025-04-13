@@ -1,0 +1,35 @@
+// 在 src/components/Layout/Main/index.scss 中添加
+.main-container {
+    height: 100%; // 继承父容器高度
+    background-color: rgba(74, 72, 72);
+    
+    .main-content {
+        height: 100%;
+        padding: 12px;
+        
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        // 自定义滚动条样式
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+            
+            
+        .content-wrapper {
+            background-color: #1a1e34;
+            padding: 20px;
+            min-height: 100%;
+            border-radius: 8px;
+        }
+    }
+}

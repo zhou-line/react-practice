@@ -6,8 +6,8 @@ import {
     UserOutlined,
     LockOutlined
 } from "@ant-design/icons";
-import {useLocation, useNavigate} from "react-router-dom";
-import {setAuth} from "@/store/actions/adminAction";
+import {useNavigate} from "react-router-dom";
+import {setAuth, setMenuKey} from "@/store/actions/adminAction";
 import {useDispatch} from "react-redux";
 import { getToken, setToken } from "@/utils/auth";
 
@@ -22,19 +22,15 @@ const Login = () => {
     const title = process.env.REACT_APP_PROJECT_NAME
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const location = useLocation()
 
     const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
         console.log('Success:', values);
         setToken('21312')
         const token = getToken()
-        console.log(location)
         dispatch(setAuth(token))
-        if (location.state) {
-            navigate(location.state?.from.pathname);
-        } else {
-            navigate("/");
-        }
+        dispatch(setMenuKey('home'))
+        
+        navigate("/");
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {

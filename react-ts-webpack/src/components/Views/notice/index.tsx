@@ -1,24 +1,37 @@
-import React, { useState } from "react";
-import {useDispatch} from "react-redux";
-import {setAuth} from "@/store/actions/adminAction";
+import AlertMessage from "@/components/Common/alertMessage";
+import { Col, Row } from "antd";
+import React from "react";
+import "./index.scss";
+
 const Notice = () => {
-    const [count, setCounts] = useState('');
-
-    const onChange = (e: any) => {
-        setCounts(e.target.value);
-    };
-
-    const dispatch = useDispatch()
 
     return (
-        <>
-            <h2>124459995543</h2>
-            <p>受控组件11</p>
-            <input type="text" value={count} onChange={onChange} />
-            <br />
-            <p>非受控组件</p>
-            <a onClick={() => dispatch(setAuth(''))} >2222222222</a>
-        </>
+        <div className="notice-container">
+            <Row gutter={[24, 24]} wrap className="notice-row" align="top">
+                <Col xs={24} sm={12}>
+                    <div className="notice-card">
+                        <h3>公告</h3>
+                        <div className="notice-card-content">
+                            <AlertMessage message={"123"} type={"warning"}/>
+                            <AlertMessage message={"234"} type={"warning"}/>
+                            <AlertMessage message={"345"} type={"warning"}/>
+                            <AlertMessage message={"456"} type={"warning"}/>
+                        </div>
+                    </div>
+                </Col>
+                <Col xs={24} sm={12}>
+                    <div className="notice-card">
+                        <h3>系统消息</h3>
+                        <div className="notice-card-content">
+                            <AlertMessage message={"123"} type={"warning"}/>
+                            <AlertMessage message={"234"} type={"warning"}/>
+                            <AlertMessage message={"345"} type={"warning"}/>
+                            <AlertMessage message={"456"} type={"warning"}/>
+                        </div>
+                    </div>
+                </Col>
+            </Row>
+        </div>
     );
 }
 
