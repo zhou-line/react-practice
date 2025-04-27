@@ -1,4 +1,4 @@
-import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
+import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
 import { getToken, removeToken } from './auth';
 // import { MessageBox, Message } from 'element-ui'
 // import store from '@/store'
@@ -7,10 +7,13 @@ import { getToken, removeToken } from './auth';
 
 // create an axios instance
 const service: AxiosInstance = axios.create({
-    baseURL: '', // url = base url + request url
-    // withCredentials: true, // send cookies when cross-domain requests
-    timeout: 5000, // request timeout
-    headers: {}
+    baseURL: 'http://localhost:8000', // Django 服务器地址
+    timeout: 5000,
+    withCredentials: true, // 允许携带 cookie
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest'
+    }
 })
 
 // request interceptor
@@ -107,22 +110,4 @@ service.interceptors.response.use(
     }
 )
 
-// 封装 GET 请求
-export const get = async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
-    return service.get(url, config);
-};
-
-// 封装 POST 请求
-export const post = async <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
-    return service.post(url, data, config);
-};
-
-// 封装 PUT 请求
-export const put = async <T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> => {
-    return service.put(url, data, config);
-};
-
-// 封装 DELETE 请求
-export const deleteRequest = async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
-    return service.delete(url, config);
-};
+export default service

@@ -1,0 +1,85 @@
+.layout-container {
+    min-height: 100vh;
+    width: 100%;
+}
+
+.header-container {
+    height: 50px;
+    width: 100%;
+    padding: 0;
+    background-color: #1e1e24;
+}
+
+.header-div-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.title-div-container {
+    height: 100%;
+    left: 50%;
+    position: relative;
+}
+
+.pic-title {
+    color: #ffffff;
+    height: 100%;
+    align-content: center;
+}
+
+.exit-btn-container {
+    margin-left: auto;
+    align-content: center;
+    flex-wrap: wrap;
+    display: flex;
+    margin-right: 1%;
+    position: relative;
+}
+
+
+.left-container .ant-spin-nested-loading {
+    background: #848482;
+}
+
+.main-container {
+    background-color: rgba(74, 72, 72);
+    
+    .main-content {
+       
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        // 自定义滚动条样式
+        &::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+
+        .menu-container {
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background:#222127;
+            border: 1px solid #0D0D0E;
+        }
+        
+        .showPic-container {
+            height: calc(100vh - 100px);
+            background: #4A4848;
+            overflow: auto;
+        }
+            
+    }
+}

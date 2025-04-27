@@ -1,6 +1,14 @@
-.menu {
+.menu-container {
     width: 100%;
+    height: 50px;
     display: flex;
+}
+
+.menu-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .pic-btn:hover .anticon{
@@ -39,39 +47,38 @@
 
 .pic-model .ant-modal-content {
     background-color: #222127;
-    color: #848484;
 }
 
 .pic-model .ant-modal-header {
     background-color: #222127;
-    color: #848484;
-    border-bottom: 1px solid #0D0D0E;
-    border-radius: 2px 2px 0 0;
+    padding: 0 0 15px 0;
+    border-bottom: 1px solid #848482;
+    margin-bottom: 15px;
+}
+
+
+.pic-model .ant-modal-body {
+    padding: 0 20px;
 }
 
 .pic-model .ant-modal-title {
-    color: #848484;
-}
-
-.pic-model .ant-modal-body {
-    background-color: #222127;
-    color: #848484;
+    color: #ffffff;
 }
 
 .pic-model .ant-modal-footer {
     background-color: #222127;
-    border-top: 1px solid #0D0D0E;
-    border-radius: 0 0 2px 2px;
+    border-top: 1px solid #848482;
+    padding: 15px 0 0 0 ;
 }
 
 .pic-model .ant-form-item-label > label {
-    color: #848484;
+    color: #ffffff;
 }
 
 .pic-model .ant-form-item-control-input-content {
-    color: #848484;
+    color: #ffffff;
 }
 
 .pic-model .ant-radio-wrapper {
-    color: #848484;
+    color: #ffffff;
 }

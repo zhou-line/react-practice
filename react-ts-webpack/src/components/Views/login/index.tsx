@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.scss";
 import type { FormProps } from 'antd';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import {
     UserOutlined,
     LockOutlined
@@ -9,34 +9,51 @@ import {
 import {useNavigate} from "react-router-dom";
 import {setAuth, setMenuKey} from "@/store/actions/adminAction";
 import {useDispatch} from "react-redux";
-import { getToken, setToken } from "@/utils/auth";
+import { getSession, login } from "@/api/user";
+
+interface LoginResponse {
+    code: number;
+    message: string;
+    token: string;
+    is_authenticated: boolean;
+    
+}
 
 type FieldType = {
     username?: string;
     password?: string;
 };
 
-
 const Login = () => {
-
     const title = process.env.REACT_APP_PROJECT_NAME
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
-        console.log('Success:', values);
-        setToken('21312')
-        const token = getToken()
-        dispatch(setAuth(token))
-        dispatch(setMenuKey('home'))
-        
-        navigate("/");
+    const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
+        try {
+            const response = await login(values);
+            const res = response as any as LoginResponse;
+            if (res.code === 200) {
+                const session = await getSession();
+                const value = session as any as LoginResponse;
+                    
+                dispatch(setAuth(value.token));
+                
+                dispatch(setMenuKey('home'));
+                message.success('登录成功');
+                navigate("/");
+            } else {
+                message.error(res.message || '登录失败');
+            }
+        } catch (error) {
+            message.error('登录失败，请重试');
+            console.error('登录错误:', error);
+        }
     };
 
     const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
-
 
     return (
         <div className="login-container">

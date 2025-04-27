@@ -10,7 +10,6 @@ const Analysis = () => {
 
     const [form] = Form.useForm();
   
-  
     return (
       <div>
         <Form

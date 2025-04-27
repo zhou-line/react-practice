@@ -3,7 +3,6 @@ import {baseRoutes, RouteConfig} from "@/routes";
 import {useEffect} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/store/store";
-import { checkPermission } from "../guards";
 
 // 遍历获取目标路由
 const getCurrentRouterMap = (routers: RouteConfig[], path: string): RouteConfig => {
@@ -27,21 +26,6 @@ export const RouterBeforeEach = ({children}: any) => {
 
     useEffect(() => {
         const router = getCurrentRouterMap(baseRoutes, location.pathname);
-        
-        // 处理路由重定向
-        if (router.redirect) {
-            navigate(router.redirect, { replace: true });
-            return;
-        }
-        
-        // 处理权限验证
-        if (!checkPermission(router, token)) {
-            navigate('/login', {
-                replace: true,
-                state: { from: location }
-            });
-            return;
-        }
         
         // 设置页面标题
         if (router.meta?.title) {

@@ -5,6 +5,7 @@ import {Spin} from "antd";
 import {generateRouter} from "@/routes/handleRouter";
 import {RouterBeforeEach} from "@/routes/components/RouterBeforeEach";
 import ProtectedRoute from "@/routes/components/ProtectedRoute ";
+import { AnnotationComponent } from '@/components/Views/annotation';
 const Design = React.lazy(() => import('../components/Layout'));
 const Home = React.lazy(() => import('../components/Views/home'));
 const Page404 = React.lazy(() => import('../components/Views/404'));
@@ -66,8 +67,8 @@ export const baseRoutes: RouteConfig[] = [
         element:<Login></Login>
     },
     {
-        path:"/annotation/:userId",
-        element:<Home></Home>,
+        path:"/annotation",
+        element:<AnnotationComponent></AnnotationComponent>,
         auth: true
     },
     {
