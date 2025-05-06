@@ -8,8 +8,13 @@ import MouseIcon from "@/assets/svg/MouseIcon";
 import AutoIcon from "@/assets/svg/AutoIcon";
 import PartIcon from "@/assets/svg/PartIcon";
 import AllIcon from "@/assets/svg/AllIcon";
+import { Mode } from "@/constants/annotationn";
 
-export const AnnotationMenu = () => {
+interface AnnotationMenuProps {
+    changeMode: (mode: Mode) => void;
+}
+
+export const AnnotationMenu = (props: AnnotationMenuProps) => {
     const [clickBtn, setClickBtn] = useState(true);
 
     const [isPartModalVisible, setIsPartModalVisible] = useState(false);
@@ -18,9 +23,6 @@ export const AnnotationMenu = () => {
 
     const [partForm] = Form.useForm();
     const [allForm] = Form.useForm();
-
-
-
 
 
     const cancel = () => {
@@ -43,7 +45,8 @@ export const AnnotationMenu = () => {
                                     />
                                 }
                                 onClick={() => {
-                                    setClickBtn(false)
+                                    setClickBtn(false);
+                                    props.changeMode(Mode.Default);
                                 }} 
                             />
                         </div>
@@ -55,7 +58,8 @@ export const AnnotationMenu = () => {
                                     />
                                 }
                                 onClick={() => {
-                                    setClickBtn(true)
+                                    setClickBtn(true);
+                                    props.changeMode(Mode.Action);
                                 }} 
                             />
                         </div>

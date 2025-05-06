@@ -67,7 +67,7 @@ export const baseRoutes: RouteConfig[] = [
         element:<Login></Login>
     },
     {
-        path:"/annotation",
+        path:"analysis/annotation",
         element:<AnnotationComponent></AnnotationComponent>,
         auth: true
     },

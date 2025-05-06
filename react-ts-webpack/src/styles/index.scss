@@ -49,20 +49,20 @@ div:focus {
 // main-container global css
 /* 修改滚动条的整体样式 */
 ::-webkit-scrollbar {
-  width: 5px; /* 纵向滚动条的宽度 */
-  height: 5px; /* 横向滚动条的高度 */
+  width: 3px; /* 纵向滚动条的宽度 */
+  height: 3px; /* 横向滚动条的高度 */
 }
 
 /* 修改滚动条轨道（轨道背景） */
 ::-webkit-scrollbar-track {
   background: #1d1d1d; /* 滚动条轨道的背景颜色 */
-  border-radius: 6px; /* 圆角 */
+  border-radius: 4px; /* 圆角 */
 }
 
 /* 修改滚动条滑块（可以拖动的部分） */
 ::-webkit-scrollbar-thumb {
   background: #444444; /* 滚动条滑块的背景颜色 */
-  border-radius: 6px; /* 圆角 */
+  border-radius: 4px; /* 圆角 */
 }
 
 /* 滚动条滑块在鼠标悬停时的样式 */
@@ -77,12 +77,31 @@ div:focus {
 
 /* 纵向滚动条特定样式 */
 ::-webkit-scrollbar-thumb:vertical {
-  background: #444444;
-  border-radius: 6px;
+  background: #848482;
+  border-radius: 4px;
 }
 
 /* 横向滚动条特定样式 */
 ::-webkit-scrollbar-thumb:horizontal {
-  background: #444444;
-  border-radius: 6px;
+  background: #848482;
+  border-radius: 4px;
+}
+
+
+.ant-select-dropdown {
+  border-radius: 0 !important;
+  background-color: #222127 !important;
+}
+
+.ant-select-dropdown .ant-select-item-option {
+  color: #909092;
+}
+
+.ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #555555;
+  color: #ffffff;
+}
+
+.ant-select-selection-item {
+  color: #ffffff !important;
 }

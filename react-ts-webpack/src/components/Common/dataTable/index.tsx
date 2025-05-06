@@ -3,6 +3,7 @@ import type { PaginationProps } from 'antd';
 import { Button, Col, List, Row } from 'antd';
 import './index.scss'
 import { ListLabel } from '@/constants/list';
+import { NavLink } from 'react-router-dom';
 
 
 // interface DataType {
@@ -87,7 +88,7 @@ const DataTable: React.FC = () => {
               }}
             >
               <Row>
-                <Col flex={6}>{ListLabel.name}</Col>
+                <Col flex={6}><NavLink to={{pathname:'annotation'}}>{ListLabel.name}</NavLink></Col>
                 <Col flex={3}>{ListLabel.group}</Col>
                 <Col flex={3}>{ListLabel.lens}</Col>
                 <Col flex={6}>{ListLabel.resource}</Col>

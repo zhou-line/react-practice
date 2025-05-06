@@ -1,8 +1,16 @@
 import React from "react";
 import './index.scss'
-import {Button, Form, Modal, Select} from "antd";
+import { Form, Modal, Select} from "antd";
 
-export const  AnnotationModel = () => {
+interface Props {
+    open: boolean,
+    setOpenModel: (open: boolean) => void,
+    cancel: () => void
+}
+
+export const  AnnotationModel = (props: Props) => {
+    const [markForm] = Form.useForm();
+    // const [submit, setSubmit] = useState([])
 
     // const getLabel = () => {
     //     if (props.target) {
@@ -114,32 +122,9 @@ export const  AnnotationModel = () => {
     //     });
     // }
 
-    // const handleCancel = () => {
-    //     props.cancelAdd()
-    //     onReset()
-    //     actModal(false)
-    // }
-
-    // const onReset = () => {
-    //     markForm.resetFields();
-    // };
-
-
-    // useEffect(() => {
-    //     getLabel()
-    // }, [props])
-
-    // useEffect(() => {
-    //     PubSub.subscribe('openModel', actModal)
-    //     PubSub.subscribe('getRec', (data)=> {
-    //         setSubmit(data)
-    //     })
-
-    //     return () => {
-    //         PubSub.unsubscribe('getRec');
-    //         PubSub.unsubscribe('openModel', actModal)
-    //     };
-    // }, [modalOpen])
+    const onReset = () => {
+        markForm.resetFields();
+    };
 
 
     return (
@@ -148,21 +133,17 @@ export const  AnnotationModel = () => {
             title="新增标注"
             className='add-model'
             style={{top: 200, right: 230}}
-            open={false}
+            open={props.open}
             closable={false}
-            // onOk={() => {
-            //     actModal(false)
-            //     onReset()
-            // }}
-            // onCancel={() => {
-            //     handleCancel()
-            //     onReset()
-            // }}
+            onOk={() => {
+                onReset()
+                props.setOpenModel(false)
+            }}
+            onCancel={() => {
+                onReset()
+                props.cancel()
+            }}
             destroyOnClose={true}
-            footer={[
-                <Button key="submit" type="primary">确定</Button>,
-                <Button key="cancel">取消</Button>,
-            ]}
             width={320}
             okText="确认"
             cancelText="取消"
@@ -171,7 +152,7 @@ export const  AnnotationModel = () => {
                 style={{maxWidth: 320}}
                 labelCol={{span: 8}}
                 wrapperCol={{span: 16}}
-                // form={markForm}
+                form={markForm}
             >
                 <Form.Item name="person" 
                     // initialValue={person.length > 0 ? person[0].id : null}
