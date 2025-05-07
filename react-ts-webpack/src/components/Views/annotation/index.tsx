@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Layout, Spin} from "antd";
+import {Button, Layout, message, Spin} from "antd";
 import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
 import { useNavigate } from 'react-router-dom';
@@ -12,15 +12,35 @@ import { AnnotationModel } from './AnnotationModel';
 import { REC } from '@/constants/annotationn';
 import imageSrc from '@/assets/0.png';
 import ConfirmDialog from '@/components/Common/ConfirmDialog';
+import { useDispatch } from 'react-redux';
+import { setSelectedIndex } from '@/store/actions/photoAction';
 
 export const AnnotationComponent = () => {
 
     const navigate = useNavigate();
-
     const [mode, setMode] = useState<string>('action');
-    const [recArrs, setRecArrs] = useState<Array<REC>>([])
+    const [recArrs, setRecArrs] = useState<Array<REC>>([]);
     const [openConfirm, setOpenConfirm] = useState(false);
-    const [openModel, setOpenModel] = useState(false)
+    const [openModel, setOpenModel] = useState(false);
+    const [data, setData] = useState<Array<REC>>([]);
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const dispatch = useDispatch()
+
+    const curObj = {
+        isRightClick: false, // 鼠标右键按下标识
+        radious: 8,          // 范围误差值
+        recSize: 6,         // 移动小框的大小
+        index: -1,          // 当前矩形框的index
+        side: -1,            // 边界值
+        resize: false, // 是否拖拽大小
+        draw: false, // 是否画图
+        drag: false, // 是否拖动
+        x: 0, // 画图的起始x
+        y: 0, // 画图的起始y
+        startX: 0, // x轴开始位置
+        startY: 0, // y轴开始位置
+    }
 
     useEffect(() => {
         const init = async () => {
@@ -87,8 +107,25 @@ export const AnnotationComponent = () => {
             ids.push(item.id);
         });
         const newRecArrs = recArrs.filter(item => !ids.includes(item.id));
-        setRecArrs(newRecArrs)
+        setRecArrs([...newRecArrs])
+        setData([...newRecArrs])
+        messageApi.open({
+            type: 'success',
+            content: '删除成功',
+        });
     };
+
+    const ok = (is: boolean) => {
+        if (is) {
+            setData(recArrs)
+            dispatch(setSelectedIndex(recArrs.length - 1))
+            messageApi.open({
+                type: 'success',
+                content: '新增成功',
+            });
+        } 
+        setOpenModel(false)
+    }
 
     const cancel = () => {
         const newRecArrs = recArrs.filter((_, index) => index !== recArrs.length - 1);
@@ -96,9 +133,34 @@ export const AnnotationComponent = () => {
         setOpenModel(false)
     }
 
+    const highLight = (data: any) => {
+        const index = recArrs.findIndex(item => item.id === data.id);
+        if (data.type === 0) {
+            recArrs.forEach((item: REC) => {
+                item.type = 1
+            })
+            curObj.index = -1;
+            dispatch(setSelectedIndex(-1))
+            return
+        }
+
+        if (index > -1) {
+            recArrs.forEach((item: REC) => {
+                item.type = 1
+            })
+            const rec = recArrs[index];
+           
+            rec.type = 0;
+            dispatch(setSelectedIndex(index))
+            curObj.index = index;
+            return;
+        }
+    }
+
 
     return (
         <Layout className="layout-container">
+            {contextHolder}
             <Header className="header-container">
                 <div className="header-div-container">
                     <div className="title-div-container">
@@ -120,6 +182,7 @@ export const AnnotationComponent = () => {
                                     imageSrc={imageSrc} 
                                     setRecArrs={setRecArrs}
                                     addToRecs={addToRecs}
+                                    curObj={curObj}
                                 />
                             </div>
                             <div className='menu-container'>
@@ -129,12 +192,15 @@ export const AnnotationComponent = () => {
                     </Content>
                 </Layout>
                 <Sider width='25%'>
-                    <AnnotationOperate/>
+                    <AnnotationOperate 
+                        data={data}
+                        highLight={highLight}
+                    />
                 </Sider>
             </Layout>
             <AnnotationModel 
                 open={openModel}
-                setOpenModel={setOpenModel}
+                ok={ok}
                 cancel={cancel}
             />
             <ConfirmDialog 

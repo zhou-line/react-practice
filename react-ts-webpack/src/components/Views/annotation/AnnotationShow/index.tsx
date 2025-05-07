@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import './index.scss';
-import { Mode, REC } from "@/constants/annotationn";
+import { CurObj, Mode, REC } from "@/constants/annotationn";
+import { RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedIndex } from "@/store/actions/photoAction";
 
 interface Props {
     mode: string;
     imageSrc: string,
     recArrs: REC[],
     setRecArrs: (recArrs: REC[]) => void,
-    addToRecs: (e: any, curObj: any) => void
+    addToRecs: (e: any, curObj: any) => void,
+    curObj: CurObj,
 }
 
 export const AnnotationShow = (props: Props) => {
@@ -19,20 +23,9 @@ export const AnnotationShow = (props: Props) => {
     const [shownWidth, setShownWidth] = useState(0);
     const [shownHeight, setShownHeight] = useState(0);
     const recArrs = props.recArrs;
-    const curObj = {
-        isRightClick: false, // 鼠标右键按下标识
-        radious: 8,          // 范围误差值
-        recSize: 6,         // 移动小框的大小
-        index: -1,          // 当前矩形框的index
-        side: -1,            // 边界值
-        resize: false, // 是否拖拽大小
-        draw: false, // 是否画图
-        drag: false, // 是否拖动
-        x: 0, // 画图的起始x
-        y: 0, // 画图的起始y
-        startX: 0, // x轴开始位置
-        startY: 0, // y轴开始位置
-    }
+    const curObj = props.curObj;
+    const selectedIndex = useSelector<RootState, number>(state => state.phote.selectedIndex);
+    const dispatch = useDispatch();
     // 初始化显示
     const getShowContext = () => {
         image.src = props.imageSrc;
@@ -54,6 +47,12 @@ export const AnnotationShow = (props: Props) => {
         getShowContext()
     }, [props.imageSrc])
 
+    useEffect(() => {
+        clearCanvas();
+        drawOldRect(recArrs);
+        drawSelectedRecs(recArrs);
+    }, [selectedIndex])
+
 
     // 重绘
     useEffect(() => {
@@ -69,6 +68,7 @@ export const AnnotationShow = (props: Props) => {
             item.type = 1
             item.isNew = false
         })
+        dispatch(setSelectedIndex(-1))
     }, [props.mode])
 
     // 清除canvas
@@ -92,6 +92,7 @@ export const AnnotationShow = (props: Props) => {
                 e.offsetY - curObj.y
             );
         }
+        
     }
 
 
@@ -132,6 +133,7 @@ export const AnnotationShow = (props: Props) => {
                     recSize,
                 );
             }
+            
         }
     }
 
@@ -428,8 +430,7 @@ export const AnnotationShow = (props: Props) => {
         // 判断是否落在的矩形框上
         // 得到落点所在框的序数
         curObj.index = getEventIndex(curObj.x, curObj.y)
-
-
+        dispatch(setSelectedIndex(curObj.index))
         // 【判断是否是多选】
         if (!e.ctrlKey) {
             recArrs.forEach(item => {
@@ -502,9 +503,11 @@ export const AnnotationShow = (props: Props) => {
     // 鼠标抬起事件
     const upFunction = (e: any) => {
         const target = e.nativeEvent
+        const focusIndex = getEventIndex(target.offsetX, target.offsetY)
         if (!e.ctrlKey) {
             if (curObj.draw && props.mode === Mode.Action) {
                 // 添加框图
+                console.log(33333)
                 curObj.index = recArrs.length - 1
                 props.addToRecs(target, curObj)
             } else if (curObj.draw && props.mode === Mode.Default) {
@@ -515,7 +518,6 @@ export const AnnotationShow = (props: Props) => {
                 getSelectedRecs(target)
 
             } else if (!curObj.resize && !curObj.drag) {
-                const focusIndex = getEventIndex(target.offsetX, target.offsetY)
                 if (focusIndex > -1) {
                     curObj.index = focusIndex
                     recArrs[focusIndex].type = 0
@@ -524,17 +526,20 @@ export const AnnotationShow = (props: Props) => {
                 }
             }
         }
+        
 
         curObj.draw = false;
         curObj.resize = false
         curObj.drag = false
 
+       
         // 重绘
         clearCanvas()
         drawOldRect(recArrs)
 
         drawSelectedRecs(recArrs);
     }
+
 
     const contextMenuFunction = (e: any) => {
         e.nativeEvent.preventDefault();
@@ -552,4 +557,5 @@ export const AnnotationShow = (props: Props) => {
             />
         </div>
     )
+
 }

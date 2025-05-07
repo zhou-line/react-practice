@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './index.scss';
-import { Button, Form, List, Select, Tabs } from 'antd';
+import { Button, Form, List, Select, Tabs, Tag } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { DraggableIconGray } from '@/assets/svg/DraggableIconGray';
 import { AllConfirmedIconGray } from '@/assets/svg/AllConfirmedIconGray';
 import { AlignedAndConfirmedIconGray } from '@/assets/svg/AlignedAndConfirmedIconGray';
 import { UnalignedAndNotConfirmedIconGray } from '@/assets/svg/UnalignedAndNotConfirmedIconGray';
+import { REC } from '@/constants/annotationn';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
-export const AnnotationOperate = () => {
+
+interface Props {
+    data: REC[],
+    highLight: (e: any) => void,
+}
+
+export const AnnotationOperate = (props: Props) => {
+
+    const selectedIndex = useSelector<RootState, number>(state => state.phote.selectedIndex)
+
+    useEffect(() => {
+
+    }, [props.data.length])
 
     const iconStyle = {
         color: '#848482',
@@ -103,14 +118,27 @@ export const AnnotationOperate = () => {
                                     loading={false}
                                     itemLayout="horizontal"
                                     size="small"
-                                    dataSource={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                                    renderItem={() => (
-                                        <List.Item className='sider-components-content-list-item'>
-                                            <div>{id}</div>
-                                            <div>{id}</div>
-                                            <div>{id}</div>
-                                            <div>{id}</div>
-                                            <div>{id}</div>
+                                    dataSource={props.data}
+                                    renderItem={(item: REC, index: number) => (
+                                        <List.Item 
+                                            className='sider-components-content-list-item'
+                                            style={{color: index === selectedIndex ? '#ffffff' : '#848482'}}
+                                            onClick={(e: any) =>{
+                                                e.stopPropagation();
+                                                props.highLight(item)
+                                            }}
+                                        >
+                                            <span>{index + 1}</span>
+                                            <span title={`未对齐`}><Tag icon={<UnalignedAndNotConfirmedIconGray />} color='#A77022'/></span>
+                                            <span 
+                                                className='item-content'
+                                                title={`表情：温柔(${item.x}, ${item.y})`}
+                                            >{`表情：温柔(${item.x}, ${item.y})`}</span>
+                                            <span 
+                                                className='item-content' 
+                                                title={`中心点：(${(item.x + item.w / 2)}, ${(item.y + item.h / 2)})`}
+                                            >{`中心点：(${(item.x + item.w / 2)}, ${(item.y + item.h / 2)})`}</span>
+                                            <span title={`未确认`}><CloseCircleOutlined style={{marginTop: 4}}/></span>
                                         </List.Item>
                                     )}
                                 />
@@ -122,6 +150,7 @@ export const AnnotationOperate = () => {
 
             <div className="sider-components-footer">
                 <Form
+                    disabled={selectedIndex === -1}
                     labelCol={{span: 6}}
                     wrapperCol={{span: 18}}
                     className="pictureBottomForm"
@@ -158,29 +187,26 @@ export const AnnotationOperate = () => {
                         name="align"
                         className="pictureFormItem"
                     >
-                        <Select placeholder="对齐人"
-                                mode="multiple"
-                                showSearch={false}
-                                open={false}
-                                allowClear={false}
-                            />
+                        <Select 
+                            placeholder="对齐人"
+                            mode="multiple"
+                            showSearch={false}
+                            open={false}
+                            allowClear={false}
+                        />
                     </Form.Item>
                     {/*    按钮组    */}
                     <div className='btnGroup'>
                         <Button
                             className="cancel-button"
                             size='middle'
-                        >
-                            取消
-                        </Button>
+                        > 取消</Button>
                         <Button
                             className="submit-btn"
                             type="primary"
                             size='middle'
                             htmlType="submit"
-                        >
-                            提交
-                        </Button>
+                        >提交</Button>
                     </div>
                 </Form>
             </div>

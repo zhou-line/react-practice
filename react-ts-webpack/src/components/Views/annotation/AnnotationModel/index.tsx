@@ -4,7 +4,7 @@ import { Form, Modal, Select} from "antd";
 
 interface Props {
     open: boolean,
-    setOpenModel: (open: boolean) => void,
+    ok: (open: boolean) => void,
     cancel: () => void
 }
 
@@ -137,7 +137,7 @@ export const  AnnotationModel = (props: Props) => {
             closable={false}
             onOk={() => {
                 onReset()
-                props.setOpenModel(false)
+                props.ok(true)
             }}
             onCancel={() => {
                 onReset()
