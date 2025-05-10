@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig} from 'axios'
-import { getToken, removeToken } from './auth';
+import { getCookie, getToken, removeToken } from './auth';
 // import { MessageBox, Message } from 'element-ui'
 // import store from '@/store'
 // import { getToken } from '@/utils/auth'
@@ -12,7 +12,8 @@ const service: AxiosInstance = axios.create({
     withCredentials: true, // 允许携带 cookie
     headers: {
         'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest'
+        'X-Requested-With': 'XMLHttpRequest',
+        "X-CSRFToken": getCookie("csrftoken")
     }
 })
 
@@ -34,9 +35,19 @@ service.interceptors.request.use(
         return config
     },
     (error: AxiosError) => {
+
+        if (error.status === 401) {
+            // token 过期或无效
+            window.location.href = `/login`;
+            return Promise.reject(new Error('认证失败，请重新登录'));
+        }
+        if (error.code === "ERR_NETWORK") {
+            window.location.href = '#/404';
+        }
         // do something with request error
         console.log(error) // for debug
-        return Promise.reject(error)
+        console.log(222)
+        window.location.href = '#/404';
     }
 )
 
@@ -54,13 +65,6 @@ service.interceptors.response.use(
      */
     (response: AxiosResponse) => {
         const res = response.data
-
-        if (res.code === 401) {
-            // token 过期或无效
-            removeToken();
-            window.location.href = `/login?redirect=${window.location.pathname}`;
-            return Promise.reject(new Error('认证失败，请重新登录'));
-        }
 
         // if the custom code is not 200, it is judged as an error.
         if (res.code !== 200) {
@@ -106,7 +110,16 @@ service.interceptors.response.use(
         //     type: 'error',
         //     duration: 5 * 1000
         // })
-        return Promise.reject(error)
+        console.log(error)
+        if (error.status === 403) {
+            // token 过期或无效
+            removeToken();
+            window.location.href = '/login';
+        }
+        if (error.code === "ERR_NETWORK") {
+            window.location.href = '#/404';
+        }
+        window.location.href = '#/404';
     }
 )
 

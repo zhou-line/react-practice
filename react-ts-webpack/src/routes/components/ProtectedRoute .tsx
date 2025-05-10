@@ -20,20 +20,25 @@ const ProtectedRoute = (props: any) => {
     const [isAuth, setIsAuth] = useState(true);
 
     useEffect(() => {
+        console.log(location)
         const checkAuthStatus = async () => {
-            const session = await getSession();
-            const value = session as any as LoginResponse;
-            if (value.is_authenticated) {
-                dispatch(setAuth(value.token));
-                setIsAuth(true)
-            } else {
-                dispatch(setAuth(''));
-                setIsAuth(false)
+            try {
+                const session = await getSession();
+                const value = session as any as LoginResponse;
+                setIsAuth(value.is_authenticated)
+                if (value.is_authenticated) {
+                    dispatch(setAuth(value.token));
+                } else {
+                    dispatch(setAuth(''));  
+                }
+
+            } catch {
+                window.location.href = '#/404';
             }
         }
     
         checkAuthStatus();
-    }, [])
+    }, [location])
 
     if (!isAuth) {
         // 保存用户尝试访问的路径

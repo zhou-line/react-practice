@@ -19,13 +19,13 @@ const Page404 = () => {
                     <div className="bullshit">
                         <div className="bullshit__oops">OOPS!</div>
                         <div className="bullshit__info">All rights reserved
-                            <a style={{color: '#20a0ff', textDecoration: 'none'}} href="https://www.swu.edu.cn" target="_blank" rel="noreferrer"> Southwest University</a>
+                            <a style={{color: '#20a0ff', textDecoration: 'none'}} href="https://github.com/marlulu" target="_blank" rel="noreferrer"> marlulu</a>
                         </div>
                         <div className="bullshit__headline">{ message }</div>
                         <div className="bullshit__info">Please check that the URL you entered is correct, or click the
                             button below to return to the homepage.
                         </div>
-                        <a href="/" className="bullshit__return-home">Back to home</a>
+                        <a href="#/login" className="bullshit__return-home">Back to Login</a>
                     </div>
                 </div>
             </div>

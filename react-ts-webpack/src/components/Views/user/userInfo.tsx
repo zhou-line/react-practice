@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Col, Form, Input, Row, theme } from 'antd';
-import USER_INFO_LABELS, { userInfoLabels} from '@/constants/user';
+import USER_INFO_LABELS, {userInfoLabels} from '@/constants/user';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { getInfo } from '@/api/user';
 
 const AdvancedSearchForm = () => {
   const { token } = theme.useToken();
   const [form] = Form.useForm();
+  const labels = USER_INFO_LABELS
+  const labelLength = Object.keys(labels).length
+  const auth = useSelector<RootState, string>(state => state.admin.auth)
 
+  const labelStyle: React.CSSProperties = {
+    color: '#ffffff'
+  };
   const formStyle: React.CSSProperties = {
     maxWidth: 'none',
     background: '#001529',
@@ -13,12 +22,13 @@ const AdvancedSearchForm = () => {
     padding: 24,
   };
 
-  const labelStyle: React.CSSProperties = {
-    color: '#ffffff'
-  };
-
-  const labels = USER_INFO_LABELS
-  const labelLength = Object.keys(labels).length
+  useEffect(() => {
+    if (auth) {
+        Promise.resolve(getInfo(auth)).then((res: any) => {
+          form.setFieldsValue(res.data)
+        })
+    }
+  }, [token])
 
   const getFields = () => {
     const children = [];
@@ -26,16 +36,13 @@ const AdvancedSearchForm = () => {
       children.push(
         <Col span={8} key={i}>
             <Form.Item
-              name={`field-${i}`}
+              name={userInfoLabels(i).id}
               label={<span style={labelStyle}>{userInfoLabels(i).name}</span>}
-              rules={[
-                {
-                  required: userInfoLabels(i).isRequire,
-                  message: 'Input something!',
-                },
-              ]}
             >
-              <Input placeholder="placeholder" />
+              <Input 
+                disabled={true} 
+                placeholder={`请输入${userInfoLabels(i).name}`} 
+              />
             </Form.Item>
         </Col>,
       );
@@ -43,16 +50,11 @@ const AdvancedSearchForm = () => {
     return children;
   };
 
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-  };
-
   return (
     <Form 
         form={form} 
         name="advanced_search" 
         style={formStyle} 
-        onFinish={onFinish}
         layout="vertical"
     >
       <Row gutter={24}>{getFields()}</Row>
@@ -63,9 +65,7 @@ const AdvancedSearchForm = () => {
 const UserInfo: React.FC = () => {
 
   return (
-    <>
-      <AdvancedSearchForm />
-    </>
+    <AdvancedSearchForm />
   );
 };
 

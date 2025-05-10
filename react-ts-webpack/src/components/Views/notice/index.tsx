@@ -2,11 +2,14 @@ import AlertMessage from "@/components/Common/alertMessage";
 import { Col, Row } from "antd";
 import React from "react";
 import "./index.scss";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 const Notice = () => {
+    const loading = useSelector((state: RootState) => state.phote.loading)
 
     return (
-        <div className="notice-container">
+        ( !loading && <div className="notice-container">
             <Row gutter={[24, 24]} wrap className="notice-row" align="top">
                 <Col xs={24} sm={12}>
                     <div className="notice-card">
@@ -31,7 +34,7 @@ const Notice = () => {
                     </div>
                 </Col>
             </Row>
-        </div>
+        </div>)
     );
 }
 

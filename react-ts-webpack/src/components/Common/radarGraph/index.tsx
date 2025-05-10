@@ -16,7 +16,12 @@ type EChartsOption = echarts.ComposeOption<
   TitleComponentOption | LegendComponentOption | RadarSeriesOption
 >;
 
-const RadarGraph = () => {
+interface Props {
+  name: string
+}
+
+
+const RadarGraph = (props: Props) => {
   const chartRef = useRef(null); // 使用useRef来获取DOM元素的引用
 
   useEffect(() => {
@@ -25,17 +30,23 @@ const RadarGraph = () => {
       const myChart = echarts.init(chartDom); // 初始化ECharts图表
       const option: EChartsOption = {
         title: {
-          text: '教学分布图'
+          text: props.name,
+          textStyle:{
+            color:'#099dff',
+            fontSize: 16,
+            fontWeight:'bold'
+          },
         },
         radar: {
           // shape: 'circle',
           indicator: [
-            { name: '德', max: 6500 },
-            { name: '智', max: 16000 },
-            { name: '体', max: 30000 },
-            { name: '美', max: 38000 },
-            { name: '劳', max: 52000 },
-            { name: '政', max: 25000 }
+            { name: 'anger', max: 500 },
+            { name: 'contempt', max: 500 },
+            { name: 'disgust', max: 500 },
+            { name: 'fear', max: 500 },
+            { name: 'happy', max: 500 },
+            { name: 'sadness', max: 500 },
+            { name: 'surprise', max: 500 }
           ]
         },
         series: [
@@ -44,10 +55,17 @@ const RadarGraph = () => {
             type: 'radar',
             data: [
               {
-                value: [4200, 3000, 20000, 35000, 50000, 18000],
+                value: [100, 200, 300, 400, 100, 100, 400],
                 name: 'Allocated Budget'
               }
-            ]
+            ],
+            label:{
+              show:true,
+              position:'top',
+              formatter:function(data: any){
+                return data.value
+              }
+            }
           }
         ]
       };

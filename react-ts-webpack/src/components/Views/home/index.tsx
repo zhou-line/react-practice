@@ -1,49 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import LineGraph from "@/components/Common/lineGraph";
 import { Col, Row } from "antd";
-
 import "./index.scss";
-import BarGraph from "@/components/Common/barGraph";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/store/actions/photoAction";
+import { RootState } from "@/store/store";
+import RadarGraph from "@/components/Common/radarGraph";
 
 function Home() {
 
-    const [loading, setLoading] = useState(true);
-   
+    const dispatch = useDispatch()
+    const loading = useSelector((state: RootState) => state.phote.loading)
 
     useEffect(() =>{
         setTimeout(() => {
-            setLoading(false)
-        }, 1000)
+            console.log(loading)
+            dispatch(setLoading(false))
+        }, 2000)
+        
     }, [])
 
     return (
-        <div className="home-container">
+        ( !loading && <div className="home-container">
             {/* 长图表部分 */}
-            {!loading && <Row className="home-info-row">
+            <Row className="home-info-row">
                 <Col xs={24} lg={24}>
-                    <LineGraph/>
+                    <LineGraph name={'整体一周框选数量'}/>
                 </Col>
-            </Row>}
+            </Row>
 
             {/* 短图表部分 */}
-            {!loading &&<Row gutter={[24, 24]} wrap className="charts-row">
+            <Row gutter={[24, 24]} wrap className="charts-row">
                 <Col xs={24} sm={12} lg={8}>
                     <div className="chart-card">
-                        <LineGraph/>
+                        <LineGraph name={'整体一周导入图片'}/>
                     </div>
                 </Col>
                 <Col xs={24} sm={12} lg={8}>
                     <div className="chart-card">
-                        <BarGraph/>
+                        <RadarGraph name={'整体一周框图类型分布'}/>
                     </div>
                 </Col>
                 <Col xs={24} sm={12} lg={8}>
                     <div className="chart-card">
-                        <LineGraph/>
+                        <LineGraph name={'整体一周导出切片'}/>
                     </div>
                 </Col>
-            </Row>}
-        </div>
+            </Row>
+        </div>)
     );
 }
 

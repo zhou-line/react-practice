@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Layout, message, Spin} from "antd";
+import {Button, Layout, Spin} from "antd";
 import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
 import { useNavigate } from 'react-router-dom';
@@ -12,8 +12,9 @@ import { AnnotationModel } from './AnnotationModel';
 import { REC } from '@/constants/annotationn';
 import imageSrc from '@/assets/0.png';
 import ConfirmDialog from '@/components/Common/ConfirmDialog';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedIndex } from '@/store/actions/photoAction';
+import { RootState } from '@/store/store';
 
 export const AnnotationComponent = () => {
 
@@ -23,7 +24,8 @@ export const AnnotationComponent = () => {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openModel, setOpenModel] = useState(false);
     const [data, setData] = useState<Array<REC>>([]);
-    const [messageApi, contextHolder] = message.useMessage();
+    const messageApi = useSelector((state: RootState) => state.phote.messageApi)
+    const loading = useSelector((state: RootState) => state.phote.loading)
 
     const dispatch = useDispatch()
 
@@ -109,20 +111,15 @@ export const AnnotationComponent = () => {
         const newRecArrs = recArrs.filter(item => !ids.includes(item.id));
         setRecArrs([...newRecArrs])
         setData([...newRecArrs])
-        messageApi.open({
-            type: 'success',
-            content: '删除成功',
-        });
+        messageApi.success('删除成功')
+        
     };
 
     const ok = (is: boolean) => {
         if (is) {
             setData(recArrs)
             dispatch(setSelectedIndex(recArrs.length - 1))
-            messageApi.open({
-                type: 'success',
-                content: '新增成功',
-            });
+            messageApi.success('新增成功')
         } 
         setOpenModel(false)
     }
@@ -159,8 +156,7 @@ export const AnnotationComponent = () => {
 
 
     return (
-        <Layout className="layout-container">
-            {contextHolder}
+        (!loading && <Layout className="layout-container">
             <Header className="header-container">
                 <div className="header-div-container">
                     <div className="title-div-container">
@@ -179,7 +175,7 @@ export const AnnotationComponent = () => {
                                 <AnnotationShow 
                                     mode={mode} 
                                     recArrs={recArrs} 
-                                    imageSrc={imageSrc} 
+                                    imageSrc={(imageSrc)} 
                                     setRecArrs={setRecArrs}
                                     addToRecs={addToRecs}
                                     curObj={curObj}
@@ -209,6 +205,6 @@ export const AnnotationComponent = () => {
                 data={recArrs} 
                 deleteSelectedRec={deleteSelectedRec}
             />
-        </Layout>
+        </Layout>)
     )
 }

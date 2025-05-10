@@ -1,4 +1,4 @@
-import {NavLink, useLocation} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import React, {useEffect, useState } from 'react';
 import {
     DesktopOutlined,
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {RootState} from "@/store/store";
 import { setMenuKey } from "@/store/actions/adminAction";
 import "./index.scss";
+import { logout } from "@/api/user";
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -24,28 +25,29 @@ interface Props {
     onCollapse: (value: boolean) => void,
 }
 
-const items: MenuItem[] = [
-    { key: 'home', icon: <HomeOutlined />, label: (<NavLink to="">首页</NavLink>) },
-    { key: 'notice', icon: <BellOutlined />, label: (<NavLink to={{pathname:'notice'}}>通知</NavLink>) },
-    { key: 'analysis', icon: <PieChartOutlined />, label: (<NavLink to={{pathname:'analysis'}}>图片分析</NavLink>) },
-    { key: 'resources', icon: <DesktopOutlined />, label: (<NavLink to={{pathname:'resources'}}>图片资源库</NavLink>) },
-    { key: 'user', icon: <UserOutlined />, label: (<NavLink to={{pathname:'user'}}>用户信息</NavLink>) },
-    { key: 'login', icon: <PoweroffOutlined />, label: (<NavLink to={"/login"} >退出登录</NavLink>) },
-];
-
 const Sidebar = (props: Props) => {
+    const messageApi = useSelector((state: RootState) => state.phote.messageApi)
     const [collapsed, setCollapsed] = useState(window.innerWidth <= 976);
     const menuKey = useSelector<RootState, string>(state => state.admin.menuKey)
     const [selectKey, setSelectKey] = useState(menuKey)
     const dispatch = useDispatch();
-    const location = useLocation();
+
+    const items: MenuItem[] = [
+        { key: 'home', icon: <HomeOutlined />, label: (<NavLink to="">首页</NavLink>) },
+        { key: 'notice', icon: <BellOutlined />, label: (<NavLink to={{pathname:'notice'}}>通知</NavLink>) },
+        { key: 'analysis', icon: <PieChartOutlined />, label: (<NavLink to={{pathname:'analysis'}}>图片分析</NavLink>) },
+        { key: 'resources', icon: <DesktopOutlined />, label: (<NavLink to={{pathname:'resources'}}>图片资源库</NavLink>) },
+        { key: 'user', icon: <UserOutlined />, label: (<NavLink to={{pathname:'user'}}>用户信息</NavLink>) },
+        { key: 'login', icon: <PoweroffOutlined />, label: (<NavLink to={"/login"} >退出登录</NavLink>), onClick: async () => {
+            await logout()
+            messageApi.success('退出成功')
+         }},
+    ];
 
     useEffect(() => {
-        if (location.state) {
-            setSelectKey(location.state?.admin.menuKey)
-            dispatch(setMenuKey(location.state?.admin.menuKey))
-        }
-    }, [dispatch, location])
+      
+        setSelectKey(menuKey)
+    }, [menuKey])
 
     useEffect(() => {
         setCollapsed(props.collapsed)
@@ -67,6 +69,7 @@ const Sidebar = (props: Props) => {
                 mode="inline"
                 theme="dark"
                 items={items}
+                selectedKeys={[selectKey]}
                 onClick={getMenuItem}
             />
         </Sider>

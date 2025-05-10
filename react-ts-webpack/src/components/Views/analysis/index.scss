@@ -1,7 +1,29 @@
 .analysis-container {
     color: #ffffff;
+    padding: 20px 20px;
+    background-color: #001529;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .custom-label {
     color: #ffffff;
+}
+
+.analysis-search {
+    height: 40px;
+    position: sticky;
+    display: flex;
+    gap: 5px;
+    overflow: auto;
+    flex-wrap: nowrap;
+    .handle-action { 
+        width: 200px;
+    }
+}
+
+.analysis-content {
+    flex: 1;
+    display: flex;
 }

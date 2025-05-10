@@ -68,7 +68,7 @@ export const baseRoutes: RouteConfig[] = [
     },
     {
         path:"analysis/annotation",
-        element:<AnnotationComponent></AnnotationComponent>,
+        element:<ProtectedRoute><AnnotationComponent></AnnotationComponent></ProtectedRoute>,
         auth: true
     },
     {

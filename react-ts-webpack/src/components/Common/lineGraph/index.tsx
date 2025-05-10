@@ -8,8 +8,11 @@ import { CanvasRenderer } from 'echarts/renderers';
 
 echarts.use([GridComponent, LineChart, CanvasRenderer, UniversalTransition, TitleComponent, TooltipComponent]);
 
+interface Prosp {
+  name: string
+}
 
-const LineGraph = () => {
+const LineGraph = (props: Prosp) => {
   const chartRef = useRef(null); // 使用useRef来获取DOM元素的引用
 
   useEffect(() => {
@@ -18,7 +21,7 @@ const LineGraph = () => {
       const myChart = echarts.init(chartDom); // 初始化ECharts图表
       const option = {
         title:{
-          text:'一周情况',
+          text: props.name,
           left:'center',
           textStyle:{
             color:'#099dff',
@@ -54,7 +57,7 @@ const LineGraph = () => {
               show:true,
               position:'top',
               formatter:function(data: any){
-                return data.value+'件'
+                return data.value
               }
             }
           }

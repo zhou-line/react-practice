@@ -8,6 +8,14 @@ export function login(data: any) {
   })
 }
 
+export function update(data: any) {
+  return request({
+    url: '/user/update_info',
+    method: 'post',
+    data
+  })
+}
+
 export function getSession() {
   return request({
     url: '/user/getSession',

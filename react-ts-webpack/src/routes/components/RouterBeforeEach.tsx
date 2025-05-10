@@ -1,8 +1,9 @@
-import { useLocation, useNavigate} from "react-router-dom";
+import { useLocation} from "react-router-dom";
 import {baseRoutes, RouteConfig} from "@/routes";
 import {useEffect} from "react";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/store/store";
+import { setMenuKey } from "@/store/actions/adminAction";
 
 // 遍历获取目标路由
 const getCurrentRouterMap = (routers: RouteConfig[], path: string): RouteConfig => {
@@ -22,16 +23,17 @@ const getCurrentRouterMap = (routers: RouteConfig[], path: string): RouteConfig 
 export const RouterBeforeEach = ({children}: any) => {
     const token = useSelector<RootState, string>(state => state.admin.auth)
     const location = useLocation();
-    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const router = getCurrentRouterMap(baseRoutes, location.pathname);
         
         // 设置页面标题
+        dispatch(setMenuKey(router.path === '/' ? 'home' : router.path ?? ''))
         if (router.meta?.title) {
             document.title = router.meta.title;
         }
         
-    }, [token, location.pathname, navigate]);
+    }, [token, location.pathname]);
     return children
 }

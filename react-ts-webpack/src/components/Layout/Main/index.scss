@@ -26,10 +26,17 @@
             
             
         .content-wrapper {
+            display: flex;
+            flex-direction: column;
             background-color: #1a1e34;
             padding: 20px;
             min-height: 100%;
-            border-radius: 8px;
+            border-radius: none;
         }
     }
+}
+
+
+.ant-spin-nested-loading .ant-spin-container::after {
+    background-color: #1A1E34 !important;
 }

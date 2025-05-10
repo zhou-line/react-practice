@@ -2,36 +2,31 @@ import React from 'react';
 import type { PaginationProps } from 'antd';
 import { Button, Col, List, Row } from 'antd';
 import './index.scss'
-import { ListLabel } from '@/constants/list';
+import { AnalysisLabel } from '@/constants/list';
 import { NavLink } from 'react-router-dom';
+import {DeleteFilled} from "@ant-design/icons";
 
 
-// interface DataType {
-//   name: {
-//     first: string;
-//     last: string;
-//   };
-//   gender: string;
-//   email: string;
-//   login: {
-//     uuid: string;
-//   };
-// }
+interface Props {
+  type: any
+}
 
-const DataTable: React.FC = () => {
+const DataTable = (props: Props) => {
+
+  const type: boolean = (props.type === AnalysisLabel ? true : false);
 
   // 自定义翻页组件样式
   const itemRender: PaginationProps['itemRender'] = (_, type, originalElement) => {
     if (type === 'prev') {
       return (
-        <Button  type='primary' size={'small'}>
+        <Button  type='primary' size={'middle'}>
           上一页
         </Button>
       );
     }
     if (type === 'next') {
       return (
-        <Button type='primary' size={'small'}>
+        <Button type='primary' size={'middle'}>
           下一页
         </Button>
       );
@@ -48,12 +43,12 @@ const DataTable: React.FC = () => {
 
   return (
     <div className='list-container'>
-      <Row className='list-header'>
-        <Col flex={6}>{ListLabel.name}</Col>
-        <Col flex={3}>{ListLabel.group}</Col>
-        <Col flex={3}>{ListLabel.lens}</Col>
-        <Col flex={6}>{ListLabel.resource}</Col>
-        <Col flex={1}>{ListLabel.num}</Col>
+      <Row className='list-header' gutter={type ? 24 : 23}>
+        <Col span={7}>{props.type.name}</Col>
+        <Col span={type ? 6 : 7}>{props.type.group}</Col>
+        <Col span={type ? 6 : 7}>{props.type.resource}</Col>
+        {type && <Col span={2} title={props.type.num} className='col-item'>{props.type.num}</Col>}
+        <Col span={3} className='center-item'>操作</Col>
       </Row>
       <Row>
         <List
@@ -68,9 +63,8 @@ const DataTable: React.FC = () => {
           }}
           // style={{width: '100%'}}
           pagination={{
-            pageSize: 15,
+            pageSize: 14,
             total: 16,
-            
             position: 'bottom',
             align: 'center',
             size: 'small',
@@ -83,16 +77,18 @@ const DataTable: React.FC = () => {
             <List.Item
               style={{ margin: '10px 0', color: '#ffffff' }}
               key={1}
-              onClick={() => {
-              
-              }}
             >
-              <Row>
-                <Col flex={6}><NavLink to={{pathname:'annotation'}}>{ListLabel.name}</NavLink></Col>
-                <Col flex={3}>{ListLabel.group}</Col>
-                <Col flex={3}>{ListLabel.lens}</Col>
-                <Col flex={6}>{ListLabel.resource}</Col>
-                <Col flex={1}>{ListLabel.num}</Col>
+              <Row gutter={type ? 24 : 23}>
+                <Col span={7}>
+                  { type ? 
+                  <NavLink to={{pathname:'annotation'}} style={{color: '#1677FF'}}>{AnalysisLabel.name}</NavLink> :
+                  <div>{AnalysisLabel.name}</div>
+                  }
+                </Col>
+                <Col span={type ? 6 : 7}>{AnalysisLabel.group}</Col>
+                <Col span={type ? 6 : 7}>{AnalysisLabel.resource}</Col>
+                {type && <Col span={2} title={props.type.num} className='col-item'>{AnalysisLabel.num}</Col>}
+                <Col span={3} title='删除' className='center-item'><DeleteFilled></DeleteFilled></Col>
               </Row>
             </List.Item>
           )}

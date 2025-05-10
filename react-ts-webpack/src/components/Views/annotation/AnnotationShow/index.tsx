@@ -15,8 +15,7 @@ interface Props {
 }
 
 export const AnnotationShow = (props: Props) => {
-
-    const image = new Image();
+    const imageRef = useRef<HTMLImageElement>(new Image());
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [ctx2d, setCtx2d] = useState<CanvasRenderingContext2D | null>(null)
     const [canvasDom, setCanvasDom] = useState<HTMLCanvasElement | null>(null);
@@ -27,24 +26,20 @@ export const AnnotationShow = (props: Props) => {
     const selectedIndex = useSelector<RootState, number>(state => state.phote.selectedIndex);
     const dispatch = useDispatch();
     // 初始化显示
-    const getShowContext = () => {
-        image.src = props.imageSrc;
+    useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         setCtx2d(canvas.getContext('2d'))
         const content = canvas.getContext('2d')
         setCanvasDom(canvasRef.current)
-        image.onload = function () {
-            canvas.width = image.width
-            canvas.height = image.height
-            setShownWidth(image.width)
-            setShownHeight(image.height)
-            content?.drawImage(image, 0, 0, image.width, image.height)
-        }
-    }
-
-    useEffect(() => {
-        getShowContext()
+        imageRef.current.onload = function () {
+            canvas.width = imageRef.current.width;
+            canvas.height = imageRef.current.height;
+            setShownWidth(imageRef.current.width);
+            setShownHeight(imageRef.current.height);
+            content?.drawImage(imageRef.current, 0, 0, imageRef.current.width, imageRef.current.height);
+        };
+        imageRef.current.src = props.imageSrc;
     }, [props.imageSrc])
 
     useEffect(() => {
@@ -74,9 +69,10 @@ export const AnnotationShow = (props: Props) => {
     // 清除canvas
     const clearCanvas = () => {
         if (!ctx2d) return
-        image.src = props.imageSrc;
+        // 先清除画布
         ctx2d.clearRect(0, 0, shownWidth, shownHeight);
-        ctx2d.drawImage(image, 0, 0, shownWidth, shownHeight)
+        // 再绘制图像
+        ctx2d.drawImage(imageRef.current, 0, 0, shownWidth, shownHeight);
     }
 
     // 鼠标按下并移动，画矩形

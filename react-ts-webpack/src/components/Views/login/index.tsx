@@ -1,15 +1,16 @@
 import React from "react";
 import "./index.scss";
 import type { FormProps } from 'antd';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input } from 'antd';
 import {
     UserOutlined,
     LockOutlined
 } from "@ant-design/icons";
 import {useNavigate} from "react-router-dom";
 import {setAuth, setMenuKey} from "@/store/actions/adminAction";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { getSession, login } from "@/api/user";
+import { RootState } from "@/store/store";
 
 interface LoginResponse {
     code: number;
@@ -28,6 +29,7 @@ const Login = () => {
     const title = process.env.REACT_APP_PROJECT_NAME
     const navigate = useNavigate()
     const dispatch = useDispatch()
+    const messageApi = useSelector((state: RootState) => state.phote.messageApi)
 
     const onFinish: FormProps<FieldType>['onFinish'] = async (values) => {
         try {
@@ -36,17 +38,19 @@ const Login = () => {
             if (res.code === 200) {
                 const session = await getSession();
                 const value = session as any as LoginResponse;
-                    
-                dispatch(setAuth(value.token));
-                
-                dispatch(setMenuKey('home'));
-                message.success('登录成功');
-                navigate("/");
+                if (value.is_authenticated) {
+                    dispatch(setAuth(value.token));
+                    dispatch(setMenuKey('home'));
+                    navigate("/");
+                    messageApi.success('登录成功');
+                } else {
+                    messageApi.error('登录失败，请重试');
+                }
             } else {
-                message.error(res.message || '登录失败');
+                messageApi.error('登录失败，请重试');
             }
         } catch (error) {
-            message.error('登录失败，请重试');
+            messageApi.error('登录失败，请重试');
             console.error('登录错误:', error);
         }
     };

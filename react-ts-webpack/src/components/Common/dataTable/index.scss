@@ -1,17 +1,78 @@
 .list-container {
+    display: flex;
+    flex-direction: column;
     margin: 12px;
+    min-height: 100%;
+    flex: 1;
+
+    .ant-row:nth-child(2) {
+        flex: 1;
+    }
 }
 
 .list-header {
     color: #ffffff;
     margin: 0 0 10px 0;
     font-weight: bold;
+    height: 20px;
+    flex: 0;
+
+    .col-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }
 
 .list-content {
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex:1;
+
+    .col-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .ant-row {
-        color: #BFBFBD
+        color: #BFBFBD;
+        height: 100%;
+    }
+
+    .ant-pagination .ant-pagination-prev button,
+    .ant-pagination .ant-pagination-next button {
+        color: #ffffff;
+        padding-bottom: 3px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .ant-btn-variant-solid:disabled {
+        cursor: not-allowed;
+    }
+
+    .ant-pagination .ant-pagination-item {
+        background-color: #001529;
+        
+    }
+
+    .ant-pagination .ant-pagination-item a {
+        color: #ffffff
     }
     
+    .ant-pagination.ant-pagination-mini .ant-pagination-item { 
+        margin: 4px 2px 0;
+    }
+
+    .ant-empty-normal .ant-empty-description {
+        color: #ffffff;
+    }
+}
+
+.center-item {
+    display: flex;
+    justify-content: center;
 }

@@ -1,30 +1,30 @@
 interface label {
+    id: string,
     name: string,
-    isRequire: boolean
 }
 
 const USER_INFO_LABELS: { [key: string]: label } = {
     0: {
-        name: "用户ID(只读)",
-        isRequire: true
+        id: 'id',
+        name: "用户ID",
     },
     1: {
+        id: 'username',
         name: "用户名",
-        isRequire: true
     },
     2: {
+        id: 'email',
         name: "Email",
-        isRequire: false
-    },
-    3: {
-        name: "姓",
-        isRequire: false
-    },
-    4: {
-        name: "名",
-        isRequire: false
     },
 }
 
 export default USER_INFO_LABELS
 export const userInfoLabels = (status: number): label => USER_INFO_LABELS[status]
+
+
+export interface User {
+    id?: string,
+    username?: string,
+    email?: string,
+    date_joined?: string
+}

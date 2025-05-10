@@ -6,8 +6,11 @@ import { CanvasRenderer } from 'echarts/renderers';
 
 echarts.use([GridComponent, BarChart, CanvasRenderer]);
 
+interface Props {
+  name: string
+}
 
-const BarGraph = () => {
+const BarGraph = (props: Props) => {
   const chartRef = useRef(null); // 使用useRef来获取DOM元素的引用
 
   useEffect(() => {
@@ -16,7 +19,7 @@ const BarGraph = () => {
       const myChart = echarts.init(chartDom); // 初始化ECharts图表
       const option = {
         title:{
-          text:'一周情况',
+          text: props.name,
           left:'center',
           textStyle:{
             color:'#099dff',
@@ -40,7 +43,14 @@ const BarGraph = () => {
         series: [
           {
             data: [120, 200, 150, 80, 70, 110, 130],
-            type: 'bar'
+            type: 'bar',
+            label:{
+              show:true,
+              position:'top',
+              formatter:function(data: any){
+                return data.value
+              }
+            }
           }
         ]
       };

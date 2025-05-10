@@ -36,4 +36,8 @@
             transition: all 0.3s ease;
         }
     }
+
+    .ant-input-outlined[disabled] {
+        color: #ffffff
+    }
 }
