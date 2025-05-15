@@ -35,7 +35,7 @@ const Head = (props: Props) => {
             }
         },
         {
-            label: (<NavLink to={"/notice"} ><Badge dot>消息通知</Badge></NavLink>),
+            label: (<NavLink to={"/notice"} ><Badge>消息通知</Badge></NavLink>),
             key: '1',
             onClick: () => {
                 console.log('消息通知')
@@ -56,7 +56,7 @@ const Head = (props: Props) => {
     const renderUserInfo = () => {
     
         return (
-            <Badge dot>
+            <Badge>
                 <Avatar 
                     style={{ 
                         backgroundColor: color, 

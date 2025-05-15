@@ -5,6 +5,7 @@ import './index.scss'
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { ResourceLabel } from "@/constants/list";
+import { getStudyGroup } from "@/api/app";
 
 const currentStyle = {
     color: '#ffffff',
@@ -14,6 +15,16 @@ const Resources = () => {
 
     const [form] = Form.useForm();
     const loading = useSelector((state: RootState) => state.phote.loading)
+    const onFinish = async() => {
+        // const data = await handleStudyGroup({
+        //     type: 'add',
+        //     ...form.getFieldsValue()
+        // })
+        const value = await getStudyGroup()
+        console.log(value)
+        // console.log(data)
+        console.log(form.getFieldsValue())
+    }
   
   
     return (
@@ -22,29 +33,30 @@ const Resources = () => {
             className="resources-search"
             layout='inline'
             form={form}
+            onFinish={onFinish}
         >
             <Form.Item 
                 label={<span style={currentStyle}>名称</span>}
-                name="layout"
+                name="name"
             >
                 <Input/>
             </Form.Item>
             <Form.Item 
                 label={<span style={currentStyle}>项目组</span>}
-                name="layout"
+                name="group"
                 className="handle-action"
             >
                 <Select/>
             </Form.Item>
             <Form.Item 
                 label={<span style={currentStyle}>来源</span>}
-                name="layout"
+                name="source"
                 className="handle-action"
             >
                 <Select/>
             </Form.Item>
             <Form.Item>
-                <Button type="primary">搜索</Button>
+                <Button type="primary" htmlType="submit">搜索</Button>
             </Form.Item>
             <Form.Item>
                 <Button type="primary">导出切片</Button>
@@ -54,7 +66,7 @@ const Resources = () => {
         <br/>
 
         <div className="resources-content">
-            <DataTable type={ResourceLabel}/>
+            <DataTable type={ResourceLabel} data={[]}/>
         </div>
       </div>)
     );

@@ -82,13 +82,12 @@ export const AnnotationShow = (props: Props) => {
             ctx2d.strokeStyle = "rgb(255, 0, 0)";
             ctx2d.setLineDash([]);
             ctx2d.strokeRect(
-                curObj.x,
-                curObj.y,
-                e.offsetX - curObj.x,
-                e.offsetY - curObj.y
+                curObj.x, // x坐标
+                curObj.y, // y坐标
+                e.offsetX - curObj.x, // 宽
+                e.offsetY - curObj.y // 高
             );
         }
-        
     }
 
 

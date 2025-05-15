@@ -4,6 +4,8 @@ export enum  Mode{
     'Auto' = 'auto',
 }
 
+export const imageUrl = "E:/backend/media"
+
 export interface REC {
     id: string;
     x: number; // x点

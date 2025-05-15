@@ -160,6 +160,7 @@ export const AnnotationComponent = () => {
             <Header className="header-container">
                 <div className="header-div-container">
                     <div className="title-div-container">
+                        <h1>zzy-test-1</h1>
                     </div>
                     <div className="exit-btn-container">
                         <Button type="link" icon={<ArrowRightOutlined style={{fontSize: 'x-large', position: 'relative', left: '50%', transform: 'translateX(-50%)'}}/>}

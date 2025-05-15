@@ -1,7 +1,7 @@
 // src/components/Views/user/index.scss
 .user-container {
     .user-info-row {
-        margin-bottom: 24px;
+        margin-bottom: 10px;
     }
 
     .user-avatar {
@@ -28,16 +28,33 @@
             height: 100%;
             background: #001529;
             border-radius: 8px;
+            border: 1px solid #ffffff;
             
             // 确保图表容器具有最小高度
             min-height: 400px;
             
             // 添加过渡效果
             transition: all 0.3s ease;
+
+            .ant-list {
+                border: 1px solid #ffffff;
+                border-radius: 4px;
+            }
         }
     }
 
     .ant-input-outlined[disabled] {
         color: #ffffff
+    }
+
+    .list-content {
+        max-height: 166px;
+        min-height: 166px;
+        overflow: auto;
+    }
+    
+    .ant-btn-variant-solid:disabled {
+        color: #889aa4;
+        background: rgba(0, 0, 0, 0.04)
     }
 }

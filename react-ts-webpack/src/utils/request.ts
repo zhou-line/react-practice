@@ -48,6 +48,7 @@ service.interceptors.request.use(
         console.log(error) // for debug
         console.log(222)
         window.location.href = '#/404';
+        return Promise.reject(error);
     }
 )
 
@@ -119,7 +120,8 @@ service.interceptors.response.use(
         if (error.code === "ERR_NETWORK") {
             window.location.href = '#/404';
         }
-        window.location.href = '#/404';
+        console.log(66666)
+        return Promise.reject(error);
     }
 )
 

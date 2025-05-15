@@ -11,6 +11,7 @@ export const setMessageApi = (messageApi: any) => {
         payload: messageApi
     };
 };
+
 export const setLoading = (loading: boolean) => {
     return {
         type: 'SET_LOADING',
@@ -18,4 +19,10 @@ export const setLoading = (loading: boolean) => {
     };
 };
 
+export const setStudyGroup = (group: string) => {
+    return {
+        type: 'SET_GROUP',
+        payload: group
+    };
+};
 

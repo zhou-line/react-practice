@@ -161,7 +161,7 @@ export const AnnotationOperate = (props: Props) => {
                     {/*标注对象*/}
                     <Form.Item
                         label={<span style={{color: '#B0B0B0', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>标注对象:</span>}
-                        name="tage"
+                        name="target"
                         className="pictureFormItem"
                     >
                         <Select

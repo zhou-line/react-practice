@@ -23,9 +23,11 @@ const AdvancedSearchForm = () => {
   };
 
   useEffect(() => {
+    console.log(1)
     if (auth) {
         Promise.resolve(getInfo(auth)).then((res: any) => {
           form.setFieldsValue(res.data)
+          console.log(1111)
         })
     }
   }, [token])

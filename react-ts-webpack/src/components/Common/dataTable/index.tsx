@@ -2,13 +2,15 @@ import React from 'react';
 import type { PaginationProps } from 'antd';
 import { Button, Col, List, Row } from 'antd';
 import './index.scss'
-import { AnalysisLabel } from '@/constants/list';
+import {AnalysisLabel } from '@/constants/list';
 import { NavLink } from 'react-router-dom';
 import {DeleteFilled} from "@ant-design/icons";
+import { imageUrl } from '@/constants/annotationn';
 
 
 interface Props {
-  type: any
+  type: any,
+  data: any
 }
 
 const DataTable = (props: Props) => {
@@ -33,21 +35,23 @@ const DataTable = (props: Props) => {
     }
     return originalElement;
   };
+  
 
   // 翻页
   const onChange: PaginationProps['onChange'] = (page: number) => {
-    
+    console.log(props.data)
     console.log(page)
   };
 
 
   return (
     <div className='list-container'>
-      <Row className='list-header' gutter={type ? 24 : 23}>
+      <Row className='list-header' gutter={24}>
         <Col span={7}>{props.type.name}</Col>
-        <Col span={type ? 6 : 7}>{props.type.group}</Col>
-        <Col span={type ? 6 : 7}>{props.type.resource}</Col>
+        <Col span={6}>{props.type.group}</Col>
+        <Col span={6}>{props.type.resource}</Col>
         {type && <Col span={2} title={props.type.num} className='col-item'>{props.type.num}</Col>}
+        {!type && <Col span={2} title={props.type.emo} className='col-item'>{props.type?.emo}</Col>}
         <Col span={3} className='center-item'>操作</Col>
       </Row>
       <Row>
@@ -61,10 +65,9 @@ const DataTable = (props: Props) => {
             xl: 1,
             xxl: 1,
           }}
-          // style={{width: '100%'}}
           pagination={{
             pageSize: 14,
-            total: 16,
+            total: 20,
             position: 'bottom',
             align: 'center',
             size: 'small',
@@ -72,22 +75,25 @@ const DataTable = (props: Props) => {
             itemRender: itemRender,
             showSizeChanger: false,
           }}
-          dataSource={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,17,18,19,20]}
-          renderItem={() => (
+          dataSource={props.data}
+          renderItem={(item: any) => (
             <List.Item
               style={{ margin: '10px 0', color: '#ffffff' }}
               key={1}
+              onClick={() => {
+                console.log(item)
+              }}
             >
               <Row gutter={type ? 24 : 23}>
                 <Col span={7}>
                   { type ? 
-                  <NavLink to={{pathname:'annotation'}} style={{color: '#1677FF'}}>{AnalysisLabel.name}</NavLink> :
-                  <div>{AnalysisLabel.name}</div>
+                  <NavLink to={{pathname:'annotation'}} style={{color: '#1677FF'}}>{item.title}</NavLink> :
+                  <div>{item.title}</div>
                   }
                 </Col>
-                <Col span={type ? 6 : 7}>{AnalysisLabel.group}</Col>
-                <Col span={type ? 6 : 7}>{AnalysisLabel.resource}</Col>
-                {type && <Col span={2} title={props.type.num} className='col-item'>{AnalysisLabel.num}</Col>}
+                <Col span={6}>{imageUrl}</Col>
+                <Col span={6}>{item.resource}</Col>
+                <Col span={2} title={type ? props.type.num : props.type.emo} className='col-item'>{item.annotation_num}</Col>
                 <Col span={3} title='删除' className='center-item'><DeleteFilled></DeleteFilled></Col>
               </Row>
             </List.Item>

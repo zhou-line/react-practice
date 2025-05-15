@@ -2,6 +2,7 @@ const initialState = {
     selectedIndex: -1,
     messageApi: null,
     loading: true,
+    group: '',
 };
 
 const photoReducer = (state = initialState, action: any) => {
@@ -20,6 +21,11 @@ const photoReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 loading: action.payload
+            };
+        case 'SET_GROUP':
+            return {
+                ...state,
+                group: action.payload
             };
         default:
             return state;

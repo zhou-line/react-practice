@@ -75,4 +75,7 @@
 .center-item {
     display: flex;
     justify-content: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

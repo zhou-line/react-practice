@@ -15,10 +15,9 @@ const Notice = () => {
                     <div className="notice-card">
                         <h3>公告</h3>
                         <div className="notice-card-content">
-                            <AlertMessage message={"123"} type={"warning"}/>
-                            <AlertMessage message={"234"} type={"warning"}/>
-                            <AlertMessage message={"345"} type={"warning"}/>
-                            <AlertMessage message={"456"} type={"warning"}/>
+                            <AlertMessage message={"已成功导入一张图片"} type={"success"}/>
+                            <AlertMessage message={"已成功导出十张切片"} type={"success"}/>
+                            <AlertMessage message={"导入图片失败，请联系管理员"} type={"warning"}/>
                         </div>
                     </div>
                 </Col>
@@ -26,10 +25,10 @@ const Notice = () => {
                     <div className="notice-card">
                         <h3>系统消息</h3>
                         <div className="notice-card-content">
-                            <AlertMessage message={"123"} type={"warning"}/>
-                            <AlertMessage message={"234"} type={"warning"}/>
+                            <AlertMessage message={"欢迎使用课堂智能标注系统"} type={"info"}/>
+                            {/* <AlertMessage message={"234"} type={"warning"}/>
                             <AlertMessage message={"345"} type={"warning"}/>
-                            <AlertMessage message={"456"} type={"warning"}/>
+                            <AlertMessage message={"456"} type={"warning"}/> */}
                         </div>
                     </div>
                 </Col>
