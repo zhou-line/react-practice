@@ -30,6 +30,22 @@ export function getStudyGroup() {
   })
 }
 
+export function getNotices(params: any) {
+  return request({
+    url: '/apps/get_notices',
+    method: 'get',
+    params
+  })
+}
+
+export function deleteNotices(data: any) {
+  return request({
+    url: '/apps/delete_notices',
+    method: 'post',
+    data
+  })
+}
+
 export function uploadImage(data: any) {
   return request({
     url: '/apps/upload_image',
@@ -43,5 +59,29 @@ export function getImages(params: any) {
     url: '/apps/get_images',
     method: 'get',
     params
+  })
+}
+
+export function getTheImage(params: any) {
+  return request({
+    url: '/apps/get_image',
+    method: 'get',
+    params
+  })
+}
+
+export function checkImage(data: any) {
+  return request({
+    url: '/apps/check_image',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteImages(data: any) {
+  return request({
+    url: '/apps/delete_image',
+    method: 'post',
+    data
   })
 }

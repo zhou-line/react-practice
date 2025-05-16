@@ -10,6 +10,7 @@ import BarGraph from "@/components/Common/barGraph";
 import {CloseCircleFilled} from "@ant-design/icons";
 import { getLabels, getStudyGroup, handleLabel, handleStudyGroup } from "@/api/app";
 import { setLoading, setStudyGroup } from "@/store/actions/photoAction";
+import { getSession } from "@/api/user";
 
 const itemStyle = {
     margin: '10px 20px', 
@@ -40,15 +41,18 @@ const User = () => {
 
     const [labels, setLabels] = useState([])
     const [groups, setGroups] = useState([])
+    const [permission, setPermission] = useState<any>(null)
 
     useEffect(() => {
         const init = async () => {
-            const [labelValue, groupValue] = await Promise.all([getLabels(), getStudyGroup()])
+            const [labelValue, groupValue, session] = await Promise.all([getLabels(), getStudyGroup(), getSession()])
             for (const value of groupValue.data) {
                 if (value.is_active) {
                     dispatch(setStudyGroup(value.title))
                 }
             }
+            setPermission(session)
+            console.log(session)
             setLabels(labelValue.data)
             setGroups(groupValue.data)
             dispatch(setLoading(false))
@@ -90,6 +94,7 @@ const User = () => {
                         <LineGraph name={'个人一周导出切片'}/>
                     </div>
                 </Col>
+                {permission?.is_superuser && 
                 <Col xs={24} sm={12} lg={8}>
                     <div className="chart-card">
                         <div>
@@ -110,7 +115,7 @@ const User = () => {
                                                         messageApi.success(res.message)
                                                         dispatch(setStudyGroup(e.target.value))
                                                     }
-                                                  
+                                                
                                                 })
                                             } catch(err) {
                                                 dispatch(setStudyGroup(''))
@@ -261,6 +266,7 @@ const User = () => {
                         <Space> </Space>
                     </div>
                 </Col>
+                }
             </Row>
         </div>)
     );

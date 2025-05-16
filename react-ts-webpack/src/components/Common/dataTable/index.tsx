@@ -4,19 +4,27 @@ import { Button, Col, List, Row } from 'antd';
 import './index.scss'
 import {AnalysisLabel } from '@/constants/list';
 import { NavLink } from 'react-router-dom';
-import {DeleteFilled} from "@ant-design/icons";
-import { imageUrl } from '@/constants/annotationn';
+import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { checkImage, deleteImages } from '@/api/app';
+// import { imageUrl } from '@/constants/annotationn';
 
 
 interface Props {
   type: any,
-  data: any
+  data: any,
+  setCurrent: any,
+  current: number,
+  loading: boolean,
+  setLoading: any
 }
 
 const DataTable = (props: Props) => {
 
   const type: boolean = (props.type === AnalysisLabel ? true : false);
-
+  const is_superuser = useSelector((state: RootState) => state.admin.superuser)
+  const messageApi = useSelector((state: RootState) => state.phote.messageApi)
   // 自定义翻页组件样式
   const itemRender: PaginationProps['itemRender'] = (_, type, originalElement) => {
     if (type === 'prev') {
@@ -39,8 +47,7 @@ const DataTable = (props: Props) => {
 
   // 翻页
   const onChange: PaginationProps['onChange'] = (page: number) => {
-    console.log(props.data)
-    console.log(page)
+    props.setCurrent(page)
   };
 
 
@@ -56,6 +63,7 @@ const DataTable = (props: Props) => {
       </Row>
       <Row>
         <List
+          loading={props.loading}
           className='list-content'
           grid={{
             xs: 1,
@@ -71,6 +79,7 @@ const DataTable = (props: Props) => {
             position: 'bottom',
             align: 'center',
             size: 'small',
+            current: props.current > 0 ? props.current : 1,
             onChange: onChange,
             itemRender: itemRender,
             showSizeChanger: false,
@@ -78,7 +87,11 @@ const DataTable = (props: Props) => {
           dataSource={props.data}
           renderItem={(item: any) => (
             <List.Item
-              style={{ margin: '10px 0', color: '#ffffff' }}
+              style={
+                is_superuser || item.is_confirm ?
+                { margin: '10px 0', color: '#ffffff' }
+                : { margin: '10px 0', color: '#ffffff', cursor:'not-allowed'}
+              }
               key={1}
               onClick={() => {
                 console.log(item)
@@ -87,14 +100,34 @@ const DataTable = (props: Props) => {
               <Row gutter={type ? 24 : 23}>
                 <Col span={7}>
                   { type ? 
-                  <NavLink to={{pathname:'annotation'}} style={{color: '#1677FF'}}>{item.title}</NavLink> :
-                  <div>{item.title}</div>
+                  <NavLink to={`/analysis/annotation/${item.id}`} style={is_superuser || item.is_confirm ? {color: '#1677FF'} : {pointerEvents:'none'}}>{item.name}</NavLink> :
+                  <div>{item.name}</div>
                   }
                 </Col>
-                <Col span={6}>{imageUrl}</Col>
-                <Col span={6}>{item.resource}</Col>
+                <Col span={6}>{item.study_group}</Col>
+                <Col span={6}>{item.user}</Col>
                 <Col span={2} title={type ? props.type.num : props.type.emo} className='col-item'>{item.annotation_num}</Col>
-                <Col span={3} title='删除' className='center-item'><DeleteFilled></DeleteFilled></Col>
+                <Col span={3} className='center-item'>{
+                  is_superuser && <div>
+                    {!item.is_confirm && <CheckOutlined title='确认' onClick={async () => {
+                       props.setLoading(true)
+                       const res = await checkImage(item) as any
+                       if (res.code === 200) {
+                         props.setLoading(false)
+                         messageApi.success(res.message)
+                       }
+                    }}></CheckOutlined>}
+                    &nbsp;&nbsp;
+                    <CloseOutlined title='删除' onClick={async () => {
+                      props.setLoading(true)
+                      const res = await deleteImages(item) as any
+                      if (res.code === 200) {
+                        props.setLoading(false)
+                        messageApi.success(res.message)
+                      }
+                    }}></CloseOutlined>
+                  </div>
+                }</Col>
               </Row>
             </List.Item>
           )}

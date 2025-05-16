@@ -5,7 +5,6 @@ import './index.scss'
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { ResourceLabel } from "@/constants/list";
-import { getStudyGroup } from "@/api/app";
 
 const currentStyle = {
     color: '#ffffff',
@@ -16,12 +15,6 @@ const Resources = () => {
     const [form] = Form.useForm();
     const loading = useSelector((state: RootState) => state.phote.loading)
     const onFinish = async() => {
-        // const data = await handleStudyGroup({
-        //     type: 'add',
-        //     ...form.getFieldsValue()
-        // })
-        const value = await getStudyGroup()
-        console.log(value)
         // console.log(data)
         console.log(form.getFieldsValue())
     }
@@ -49,11 +42,11 @@ const Resources = () => {
                 <Select/>
             </Form.Item>
             <Form.Item 
-                label={<span style={currentStyle}>来源</span>}
+                label={<span style={currentStyle}>图源</span>}
                 name="source"
                 className="handle-action"
             >
-                <Select/>
+                <Input/>
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit">搜索</Button>
@@ -66,7 +59,7 @@ const Resources = () => {
         <br/>
 
         <div className="resources-content">
-            <DataTable type={ResourceLabel} data={[]}/>
+            <DataTable type={ResourceLabel} data={[]} setCurrent={undefined} current={0} loading={false} setLoading={undefined}/>
         </div>
       </div>)
     );

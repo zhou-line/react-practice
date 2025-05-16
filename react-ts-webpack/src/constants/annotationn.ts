@@ -4,7 +4,7 @@ export enum  Mode{
     'Auto' = 'auto',
 }
 
-export const imageUrl = "E:/backend/media"
+export const imageUrlPre = "http://localhost:8000/media/"
 
 export interface REC {
     id: string;

@@ -29,3 +29,10 @@ export function logout() {
     method: 'get'
   })
 }
+
+export function getUsers() {
+  return request({
+    url: '/user/get_users',
+    method: 'get'
+  })
+}

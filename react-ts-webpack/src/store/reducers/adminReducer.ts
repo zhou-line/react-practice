@@ -1,6 +1,7 @@
 const initialState = {
     auth: '',
     menuKey: 'home',
+    superuser: false,
 };
 
 const adminReducer = (state = initialState, action: any) => {
@@ -14,6 +15,11 @@ const adminReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 menuKey: action.payload
+            };
+        case 'SET_SUPER_USER':
+            return {
+                ...state,
+                superuser: action.payload
             };
         default:
             return state;

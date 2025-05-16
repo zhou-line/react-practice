@@ -47,6 +47,12 @@ export const  AnnotationModel = (props: Props) => {
                         style={{width: 120}}
                     />
                 </Form.Item>
+                <Form.Item name="person" 
+                    label={<label>标签</label>}>
+                    <Select
+                        style={{width: 120}}
+                    />
+                </Form.Item>
             </Form>
         </Modal>
        

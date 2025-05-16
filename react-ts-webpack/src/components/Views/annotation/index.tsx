@@ -2,21 +2,21 @@ import React, {useEffect, useState} from 'react';
 import {Button, Layout, Spin} from "antd";
 import Sider from "antd/es/layout/Sider";
 import {Content, Header} from "antd/es/layout/layout";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import './index.scss';
 import {ArrowRightOutlined} from "@ant-design/icons";
 import { AnnotationMenu } from './AnnotationMenu';
 import { AnnotationShow } from './AnnotationShow';
 import { AnnotationOperate } from './AnnotationOperate';
 import { AnnotationModel } from './AnnotationModel';
-import { REC } from '@/constants/annotationn';
-import imageSrc from '@/assets/0.png';
+import { imageUrlPre, REC } from '@/constants/annotationn';
 import ConfirmDialog from '@/components/Common/ConfirmDialog';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedIndex } from '@/store/actions/photoAction';
+import { setLoading, setSelectedIndex } from '@/store/actions/photoAction';
 import { RootState } from '@/store/store';
+import { getTheImage } from '@/api/app';
 
-export const AnnotationComponent = () => {
+const AnnotationComponent = () => {
 
     const navigate = useNavigate();
     const [mode, setMode] = useState<string>('action');
@@ -26,6 +26,9 @@ export const AnnotationComponent = () => {
     const [data, setData] = useState<Array<REC>>([]);
     const messageApi = useSelector((state: RootState) => state.phote.messageApi)
     const loading = useSelector((state: RootState) => state.phote.loading)
+    const { userId } = useParams()
+    const [pic, setPic] = useState<any>(null)
+    const [imgSrc, setImgSrc] = useState('') 
 
     const dispatch = useDispatch()
 
@@ -46,7 +49,14 @@ export const AnnotationComponent = () => {
 
     useEffect(() => {
         const init = async () => {
+            const res = await getTheImage({id: userId})
+            const picData = res.data
+            setPic(picData)
+            setImgSrc(imageUrlPre + picData.picture_file)
             setRecArrs([])
+
+            dispatch(setLoading(false))
+
         }
         init()
     }, []);
@@ -156,56 +166,60 @@ export const AnnotationComponent = () => {
 
 
     return (
-        (!loading && <Layout className="layout-container">
-            <Header className="header-container">
-                <div className="header-div-container">
-                    <div className="title-div-container">
-                        <h1>zzy-test-1</h1>
+        <Layout className="layout-container">
+            <Spin spinning={loading} tip="Loading..." style={{top: '160px'}}>
+                <Header className="header-container">
+                    <div className="header-div-container">
+                        <div className="title-div-container">
+                            <h1>{pic?.name}</h1>
+                        </div>
+                        <div className="exit-btn-container">
+                            <Button type="link" icon={<ArrowRightOutlined style={{fontSize: 'x-large', position: 'relative', left: '50%', transform: 'translateX(-50%)'}}/>}
+                                    onClick={() => {navigate('/analysis')}}/>
+                        </div>
                     </div>
-                    <div className="exit-btn-container">
-                        <Button type="link" icon={<ArrowRightOutlined style={{fontSize: 'x-large', position: 'relative', left: '50%', transform: 'translateX(-50%)'}}/>}
-                                onClick={() => {navigate('/analysis')}}/>
-                    </div>
-                </div>
-            </Header>
-            <Layout className='left-container'>
-                <Layout className="main-container">
-                    <Content className="main-content">
-                        <Spin spinning={false} tip="Loading..." style={{top: '160px'}}>
-                            <div className='showPic-container'>
-                                <AnnotationShow 
-                                    mode={mode} 
-                                    recArrs={recArrs} 
-                                    imageSrc={(imageSrc)} 
-                                    setRecArrs={setRecArrs}
-                                    addToRecs={addToRecs}
-                                    curObj={curObj}
-                                />
-                            </div>
-                            <div className='menu-container'>
-                                <AnnotationMenu changeMode={changeMode}/>
-                            </div>
-                        </Spin>  
-                    </Content>
+                </Header>
+                <Layout className='left-container'>
+                    <Layout className="main-container">
+                        <Content className="main-content">
+                            <Spin spinning={false} tip="Loading..." style={{top: '160px'}}>
+                                <div className='showPic-container'>
+                                    <AnnotationShow 
+                                        mode={mode} 
+                                        recArrs={recArrs} 
+                                        imageSrc={imgSrc} 
+                                        setRecArrs={setRecArrs}
+                                        addToRecs={addToRecs}
+                                        curObj={curObj}
+                                    />
+                                </div>
+                                <div className='menu-container'>
+                                    <AnnotationMenu changeMode={changeMode}/>
+                                </div>
+                            </Spin>  
+                        </Content>
+                    </Layout>
+                    <Sider width='25%'>
+                        <AnnotationOperate 
+                            data={data}
+                            highLight={highLight}
+                        />
+                    </Sider>
                 </Layout>
-                <Sider width='25%'>
-                    <AnnotationOperate 
-                        data={data}
-                        highLight={highLight}
-                    />
-                </Sider>
-            </Layout>
-            <AnnotationModel 
-                open={openModel}
-                ok={ok}
-                cancel={cancel}
-            />
-            <ConfirmDialog 
-                openConfirm={openConfirm} 
-                setOpenConfirm={setOpenConfirm} 
-                data={recArrs} 
-                deleteSelectedRec={deleteSelectedRec}
-            />
-        </Layout>)
+                <AnnotationModel 
+                    open={openModel}
+                    ok={ok}
+                    cancel={cancel}
+                />
+                <ConfirmDialog 
+                    openConfirm={openConfirm} 
+                    setOpenConfirm={setOpenConfirm} 
+                    data={recArrs} 
+                    deleteSelectedRec={deleteSelectedRec}
+                />
+            </Spin>
+        </Layout>
     )
 }
+
+export default AnnotationComponent

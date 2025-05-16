@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, InputNumber, Select, Upload, UploadProps } from "antd";
+import { Button, Form, Input, InputNumber, Select, Upload } from "antd";
 import DataTable from "@/components/Common/dataTable";
 import './index.scss'
 import {useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { AnalysisLabel } from "@/constants/list";
 import { getCookie } from "@/utils/auth";
-import { getImages } from "@/api/app";
+import { getImages, getStudyGroup } from "@/api/app";
 import { setLoading } from "@/store/actions/photoAction";
 
 const currentStyle = {
@@ -18,62 +18,48 @@ const Analysis = () => {
     const messageApi = useSelector((state: RootState) => state.phote.messageApi)
     const [pageLoading, setPageLoading] = useState(false)
     const [data, setData] = useState([])
+    const [dataGroups, setDataGroups] = useState<any>([])
+    const [current, setCurrent] = useState(1)
 
     const dispatch = useDispatch()
 
     const [form] = Form.useForm();
 
     const onFinish = () => {
-        console.log(form.getFieldsValue())
-    }
-
-    const getData = async () => {
+        if (current === -1) {
+            setCurrent(1)
+        } else {
+            setCurrent(-1)
+        }
        
-           const res = await getImages({data:1}) as any
-           if (res.code === 200) {
-            console.log(res.data)
-                setData(res.data)
-           }
-           dispatch(setLoading(false))
+        setPageLoading(true)
     }
 
     useEffect(() => {
+        const getData = async () => {
+            const [groups, images] = await Promise.all([
+                getStudyGroup(), 
+                getImages({
+                    page: current > 0 ? current : 1,
+                    ...form.getFieldsValue()
+                })
+            ])
+            const labels = []
+            for (const group of groups.data) {
+                labels.push({
+                    value: group.id,
+                    label: group.title
+                })
+            }
+            setDataGroups(labels)
+            setData(images.data.data)
+            dispatch(setLoading(false))
+            setPageLoading(false)
+        }
         getData()
-    }, [])
+    }, [current, pageLoading])
+
     
-    
-
-    const csrfToken = getCookie("csrftoken");
-
-
-    const props: UploadProps = {
-        action: 'http://localhost:8000/apps/upload_image',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            "X-CSRFToken": csrfToken,
-        },
-        beforeUpload: (file) => {
-            setPageLoading(true)
-            const isPNG = file.type === 'image/png';
-            if (!isPNG) {
-                messageApi.error('图片格式错误，请上传PNG格式');
-                setPageLoading(false)
-            }
-            return isPNG || Upload.LIST_IGNORE;
-        },
-        onChange: (info) => {
-            const res = info.file;
-            if (res.status === "done") {
-                const response = res.response
-                if (response.code === 200) {
-                    messageApi.success(response.message);
-                } else {
-                    messageApi.error(response.message);
-                }
-                setPageLoading(false)
-            }
-        },
-    };
   
     return (
       (!loading && <div className="analysis-container">
@@ -87,21 +73,25 @@ const Analysis = () => {
                 label={<span style={currentStyle}>名称</span>}
                 name="name"
             >
-                <Input/>
+                <Input />
             </Form.Item>
             <Form.Item 
                 label={<span style={currentStyle}>项目组</span>}
                 name="group"
                 className="handle-action"
             >
-                <Select/>
+                <Select
+                    allowClear={true}
+                    className="item-select"
+                    options={dataGroups}
+                />
             </Form.Item>
             <Form.Item 
                 label={<span style={currentStyle}>来源</span>}
                 name="source"
                 className="handle-action"
             >
-                <Select/>
+                <Input/>
             </Form.Item>
             <Form.Item 
                 label={<span style={currentStyle}>标注数量</span>}
@@ -110,17 +100,58 @@ const Analysis = () => {
                 <InputNumber min={0} max={10} step={1} defaultValue={0}/>
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit">搜索</Button>
+                <Button type="primary" htmlType="submit" loading={pageLoading}>搜索</Button>
             </Form.Item>
             <Form.Item>
-                <Upload {...props} maxCount={1} showUploadList={false}>
+                <Upload
+                    action={'http://localhost:8000/apps/upload_image'}
+                    headers={{
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCookie("csrftoken"),
+                    }}
+                    beforeUpload={(file) => {
+                        setPageLoading(true)
+                        const isPNG = file.type === 'image/png';
+                        if (!isPNG) {
+                            messageApi.error('图片格式错误，请上传PNG格式');
+                            setPageLoading(false)
+                        }
+                        return isPNG || Upload.LIST_IGNORE;
+                    }}
+                    onChange={(info) => {
+                        const res = info.file;
+                        if (res.status === "done") {
+                            const response = res.response
+                            if (response.code === 200) {
+                                messageApi.success(response.message);
+                            } else {
+                                messageApi.error(response.message);
+                            }
+                            setPageLoading(false)
+                            if (current === 1) {
+                                setCurrent(-1)
+                            } else {
+                                setCurrent(1)
+                            }
+                        }
+                    }}
+                    maxCount={1} 
+                    showUploadList={false} 
+                    withCredentials={true}>
                     <Button type="primary" loading={pageLoading}>导入图片</Button>
                 </Upload>
             </Form.Item>
         </Form>
         <br/>
         <div className="analysis-content">
-            <DataTable type={AnalysisLabel} data={data} />
+            <DataTable 
+                type={AnalysisLabel} 
+                data={data} 
+                setCurrent={setCurrent} 
+                current={current} 
+                loading={pageLoading} 
+                setLoading={setPageLoading}
+            />
         </div>
       </div>)
     );

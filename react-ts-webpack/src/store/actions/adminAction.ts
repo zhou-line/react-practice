@@ -12,3 +12,10 @@ export const setMenuKey = (menuKey: string) => {
     };
 };
 
+export const setSuperuser = (superuser: boolean) => {
+    return {
+        type: 'SET_SUPER_USER',
+        payload: superuser
+    };
+};
+

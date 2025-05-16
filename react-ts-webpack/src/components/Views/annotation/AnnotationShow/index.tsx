@@ -39,6 +39,7 @@ export const AnnotationShow = (props: Props) => {
             setShownHeight(imageRef.current.height);
             content?.drawImage(imageRef.current, 0, 0, imageRef.current.width, imageRef.current.height);
         };
+        console.log(props.imageSrc)
         imageRef.current.src = props.imageSrc;
     }, [props.imageSrc])
 
