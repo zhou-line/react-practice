@@ -9,9 +9,17 @@ import AutoIcon from "@/assets/svg/AutoIcon";
 import PartIcon from "@/assets/svg/PartIcon";
 import AllIcon from "@/assets/svg/AllIcon";
 import { Mode } from "@/constants/annotationn";
+import { autoAnnotations } from "@/api/app";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoading } from "@/store/actions/photoAction";
+import { getRec } from "@/utils/tools";
+import { RootState } from "@/store/store";
 
 interface AnnotationMenuProps {
     changeMode: (mode: Mode) => void;
+    pic: any,
+    labels: any,
+    setRecArrs: any
 }
 
 export const AnnotationMenu = (props: AnnotationMenuProps) => {
@@ -19,15 +27,26 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
 
     const [isPartModalVisible, setIsPartModalVisible] = useState(false);
     const [isAllModalVisible, setIsAllModalVisible] = useState(false);
+    const messageApi = useSelector((state: RootState) => state.phote.messageApi)
 
 
     const [partForm] = Form.useForm();
     const [allForm] = Form.useForm();
 
+    const dispatch = useDispatch()
+
 
     const cancel = () => {
         setIsAllModalVisible(false)
         setIsPartModalVisible(false)
+    }
+
+    const partAlign = () => {
+        console.log(partForm.getFieldsValue())
+    }
+
+    const allAlign = () => {
+        console.log(allForm.getFieldsValue())
     }
 
     return (
@@ -75,8 +94,16 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                                     props={{color: '#848482'}}
                                 />
                             }
-                            onClick={() => {
-                                    
+                            onClick={async () => {
+                                dispatch(setLoading(true))
+                                const res = await autoAnnotations({
+                                    pictureId: props.pic.id,
+                                    picture_file: props.pic.picture_file,
+                                    labels: props.labels
+                                })
+                                props.setRecArrs(getRec(res.data))
+                                messageApi.success('智能标注成功')
+                                dispatch(setLoading(false))
                             }} 
                         />
                         <Button className="pic-btn" type="text" title='局部对齐设置'
@@ -107,7 +134,12 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                     destroyOnClose={true}
                     onCancel={() => setIsPartModalVisible(false)}
                     footer={[
-                        <Button key="back" onClick={() => {}}>
+                        <Button 
+                            key="back" 
+                            onClick={() => {
+                                partAlign()
+                            }}
+                        >
                             确认
                         </Button>,
                         <Button key="submit" type="primary" onClick={() => cancel()}>
@@ -143,7 +175,12 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                     destroyOnClose={true}
                     onCancel={() => setIsAllModalVisible(false)}
                     footer={[
-                        <Button key="back" onClick={() => {}}>
+                        <Button 
+                            key="back" 
+                            onClick={() => {
+                                allAlign()
+                            }}
+                        >
                             确认
                         </Button>,
                         <Button key="submit" type="primary" onClick={() => cancel()}>

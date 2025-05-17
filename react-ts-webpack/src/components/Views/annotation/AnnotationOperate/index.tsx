@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.scss';
 import { Button, Form, List, Select, Tabs, Tag } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
@@ -7,22 +7,81 @@ import { AllConfirmedIconGray } from '@/assets/svg/AllConfirmedIconGray';
 import { AlignedAndConfirmedIconGray } from '@/assets/svg/AlignedAndConfirmedIconGray';
 import { UnalignedAndNotConfirmedIconGray } from '@/assets/svg/UnalignedAndNotConfirmedIconGray';
 import { REC } from '@/constants/annotationn';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import { getUsers } from '@/api/user';
+import { confirmAnnotations, editAnnotation, getAnnotations } from '@/api/app';
+import { getRec } from '@/utils/tools';
+import { setSelectedIndex } from '@/store/actions/photoAction';
 
 
 interface Props {
     data: REC[],
     highLight: (e: any) => void,
+    labels: any,
+    loading: boolean,
+    setRecArrs: any,
+    picId: any
 }
 
 export const AnnotationOperate = (props: Props) => {
 
     const selectedIndex = useSelector<RootState, number>(state => state.phote.selectedIndex)
+    const superuser = useSelector<RootState, number>(state => state.admin.superuser)
+    const [users, setUsers] = useState<any>([])
+    const [form] = Form.useForm();
+
+    const [target, setTarget] = useState('')
+    const [valueLabel, setValueLabel] = useState('')
+    const [loading, setLoading] = useState(props.loading)
+    const [align, setAlign] = useState(0)
+    const dispatch = useDispatch()
+    
+
+    useEffect(() => {
+        const getUser = async () => {
+            const res = await getUsers()
+            if (res.data[0].is_superuser) {
+                res.data[0].username = '所有'            
+            }
+            console.log(res.data)
+            setUsers(res.data)
+        }
+        getUser()
+    }, [])
 
     useEffect(() => {
 
-    }, [props.data.length])
+    }, [props.loading, props.data.length])
+
+    const init = async () => {
+        const submit = {
+            picId: props.picId,
+            target: target,
+            labelValue: valueLabel
+        }
+        const res = await getAnnotations(submit)
+        props.setRecArrs(getRec(res.data))
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        init()
+    }, [])
+
+
+    useEffect(() => {
+        if (selectedIndex > -1) {
+            console.log(props.data[selectedIndex])
+            form.setFieldsValue({
+                target: props.data[selectedIndex]?.target,
+                expression: props.data[selectedIndex]?.labelValue
+            })
+        } else {
+            form.resetFields()
+        }
+
+    }, [selectedIndex])
 
     const iconStyle = {
         color: '#848482',
@@ -36,28 +95,144 @@ export const AnnotationOperate = (props: Props) => {
         <div className="confirmIconGroup">
             <Button className="pic-btn" type="text" title='全部确认'
                 icon={<AllConfirmedIconGray style={{fontSize: " 19px"}}/>}
+                onClick={async () => {
+                    const ids = props.data.map(item => item.id)
+                    setLoading(true)
+                    const submit = {
+                        picId: props.picId,
+                        target: target,
+                        labelValue: valueLabel,
+                        ids: ids,
+                        confirm: 1,
+                        align: align
+                    }
+                    await confirmAnnotations(submit)
+                    props.data.forEach(item => {
+                        item.confirm = 1
+                    })
+                    dispatch(setSelectedIndex(-1))
+                    setLoading(false)
+                }}
             />
             <Button className="pic-btn" type="text" title='未对齐'
                 icon={<UnalignedAndNotConfirmedIconGray/>}
+                onClick={async () => {
+                    setLoading(true)
+                    const submit = {
+                        picId: props.picId,
+                        target: target,
+                        labelValue: valueLabel,
+                        align: 0
+                    }
+                    setAlign(0)
+                    const res = await getAnnotations(submit)
+                    props.setRecArrs(getRec(res.data))
+                    dispatch(setSelectedIndex(-1))
+                    setLoading(false)
+                }}
             />
             <Button className="pic-align" type="text" title='已对齐'
                 icon={<AlignedAndConfirmedIconGray/>}
+                onClick={async () => {
+                    setLoading(true)
+                    const submit = {
+                        picId: props.picId,
+                        target: target,
+                        labelValue: valueLabel,
+                        align: 1,
+                    }
+                    setAlign(1)
+                    const res = await getAnnotations(submit)
+                    props.setRecArrs(getRec(res.data))
+                    dispatch(setSelectedIndex(-1))
+                    setLoading(false)
+                }}
             />
             <Button className="pic-btn" type="text" title='未确认'
                 icon={<CloseCircleOutlined style={iconStyle}/>}
+                onClick={async () => {
+                    setLoading(true)
+                    const submit = {
+                        picId: props.picId,
+                        target: target,
+                        labelValue: valueLabel,
+                        confirm: 0
+                    }
+                    const res = await getAnnotations(submit)
+                    props.setRecArrs(getRec(res.data))
+                    dispatch(setSelectedIndex(-1))
+                    setLoading(false)
+                }}
             />
             <Button className="pic-btn" type="text" title='已确认'
                 icon={<CheckCircleOutlined style={iconStyle}/>}
+                onClick={async () => {
+                    setLoading(true)
+                    const submit = {
+                        picId: props.picId,
+                        target: target,
+                        labelValue: valueLabel,
+                        confirm: 1
+                    }
+                    const res = await getAnnotations(submit)
+                    props.setRecArrs(getRec(res.data))
+                    dispatch(setSelectedIndex(-1))
+                    setLoading(false)
+                }}
             />
             <Button className="pic-btn" type="text" title='全部'
                 icon={<DraggableIconGray/>}
+                onClick={async () => {
+                    setLoading(true)
+                    const submit = {
+                        picId: props.picId,
+                        target: target,
+                        labelValue: valueLabel
+                    }
+                    const res = await getAnnotations(submit)
+                    props.setRecArrs(getRec(res.data))
+                    dispatch(setSelectedIndex(-1))
+                    setLoading(false)
+                }}
             />
         </div>
     );
 
-    const onChange = (key: string) => {
-        console.log(key);
+    const onChange = async (key: string) => {
+        setLoading(true)
+        if (key === '1' && superuser) {
+            init()
+        } else {
+            const submit = {
+                picId: props.picId,
+                target: target,
+                labelValue: valueLabel,
+                username: users[(+key - 1)].username
+            }
+            const res = await getAnnotations(submit)
+            props.setRecArrs(getRec(res.data))
+            setLoading(false)
+        }
+        dispatch(setSelectedIndex(-1))
     };
+
+    const onFinish = async (values: any) => {
+        console.log('Success:', values);
+        const label = props.labels.filter((item: any) => item.value === values.expression)[0]
+        const submit = {
+            id: props.data[selectedIndex].id,
+            label: label.label,
+            labelValue: label.value,
+            target: values?.target,
+            align_user: values?.align_user
+        }
+        props.data[selectedIndex].label = label.label
+        props.data[selectedIndex].labelValue = label.value
+        props.data[selectedIndex].target = values.target
+        props.setRecArrs([...props.data])
+        await editAnnotation(submit)
+    };
+
 
     return (
         <div className="sider-components">
@@ -69,36 +244,43 @@ export const AnnotationOperate = (props: Props) => {
                         style={{flex:3}}
                         allowClear={true}
                         options={[
-                            { value: 'jack', label: 'Jack' },
-                            { value: 'lucy', label: 'Lucy' },
-                            { value: 'Yiminghe', label: 'yiminghe' },
-                            { value: 'disabled', label: 'Disabled', disabled: true },
+                            { value: '教师', label: '教师' },
+                            { value: '学生', label: '学生' },
                         ]}
+                        onChange={async (value: any) => {
+                            setLoading(true)
+                            setTarget(value)
+                            const submit = {
+                                picId: props.picId,
+                                target: value,
+                                labelValue: valueLabel
+                            }
+                            const res = await getAnnotations(submit)
+                            props.setRecArrs(getRec(res.data))
+                            dispatch(setSelectedIndex(-1))
+                            setLoading(false)
+                        }}
                     
-                    />
-                    <Select
-                        placeholder="标签"
-                        size='middle'
-                        style={{flex:3}}
-                        allowClear={true}
-                        options={[
-                            { value: 'jack', label: 'Jack' },
-                            { value: 'lucy', label: 'Lucy' },
-                            { value: 'Yiminghe', label: 'yiminghe' },
-                            { value: 'disabled', label: 'Disabled', disabled: true },
-                        ]}
                     />
                     <Select
                         placeholder="标签值"
                         size='middle'
                         style={{flex:3}}
                         allowClear={true}
-                        options={[
-                            { value: 'jack', label: 'Jack' },
-                            { value: 'lucy', label: 'Lucy' },
-                            { value: 'Yiminghe', label: 'yiminghe' },
-                            { value: 'disabled', label: 'Disabled', disabled: true },
-                        ]}
+                        options={props.labels}
+                        onChange={async (value: any) => {
+                            setLoading(true)
+                            setValueLabel(value)
+                            const submit = {
+                                picId: props.picId,
+                                target: target,
+                                labelValue: value
+                            }
+                            const res = await getAnnotations(submit)
+                            props.setRecArrs(getRec(res.data))
+                            dispatch(setSelectedIndex(-1))
+                            setLoading(false)
+                        }}
                     />
                 </div>
             </div>
@@ -107,15 +289,15 @@ export const AnnotationOperate = (props: Props) => {
                     tabBarExtraContent={operations}
                     onChange={onChange}
                     type="card"
-                    items={Array.from({ length: 2 }).map((_, i) => {
+                    items={Array.from(users).map((_, i) => {
                         const id = String(i + 1);
                         return {
-                            label: `Tab ${id}`,
+                            label: users[i]?.username,
                             key: id,
                             children: (
                                 <List
                                     className='sider-components-content-list'
-                                    loading={false}
+                                    loading={loading}
                                     itemLayout="horizontal"
                                     size="small"
                                     dataSource={props.data}
@@ -129,16 +311,54 @@ export const AnnotationOperate = (props: Props) => {
                                             }}
                                         >
                                             <span>{index + 1}</span>
-                                            <span title={`未对齐`}><Tag icon={<UnalignedAndNotConfirmedIconGray />} color='#A77022'/></span>
+                                            {item.align ? <span title={`已对齐`}>
+                                                <Tag icon={<AlignedAndConfirmedIconGray />} color='#1677FF'/>
+                                            </span>:
+                                            <span title={`未对齐`}>
+                                                <Tag icon={<UnalignedAndNotConfirmedIconGray />} color='#A77022'/>
+                                            </span>}
                                             <span 
                                                 className='item-content'
-                                                title={`表情：温柔(${item.x}, ${item.y})`}
-                                            >{`表情：温柔(${item.x}, ${item.y})`}</span>
+                                                title={`表情：${item.label}(${item.x}, ${item.y})`}
+                                            >{`表情：${item.label}(${item.x}, ${item.y})`}</span>
                                             <span 
                                                 className='item-content' 
-                                                title={`中心点：(${(item.x + item.w / 2)}, ${(item.y + item.h / 2)})`}
-                                            >{`中心点：(${(item.x + item.w / 2)}, ${(item.y + item.h / 2)})`}</span>
-                                            <span title={`未确认`}><CloseCircleOutlined style={{marginTop: 4}}/></span>
+                                                title={`标注人：(${item.annotator})`}
+                                            >{`标注人：(${item.annotator})`}</span>
+                                            {
+                                                item.confirm ?
+                                                <span title={`取消确认`}>
+                                                    <CloseCircleOutlined 
+                                                        style={{marginTop: 4}}
+                                                        onClick={async () => {
+                                                            setLoading(true)
+                                                            const submit = {
+                                                                ids: [item.id],
+                                                                confirm: 0,
+                                                            }
+                                                            await confirmAnnotations(submit)
+                                                            item.confirm = 0
+                                                            setLoading(false)
+                                                        }}
+                                                    />
+                                                </span> :
+                                                <span title={`确认`}>
+                                                    <CheckCircleOutlined 
+                                                        style={{marginTop: 4}}
+                                                        onClick={async () => {
+                                                            setLoading(true)
+                                                            const submit = {
+                                                                ids: [item.id],
+                                                                confirm: 1,
+                                                            }
+                                                            item.confirm = 1
+                                                            await confirmAnnotations(submit)
+                                                            props.setRecArrs([...props.data])
+                                                            setLoading(false)
+                                                        }}
+                                                    />
+                                                </span>
+                                            }
                                         </List.Item>
                                     )}
                                 />
@@ -156,7 +376,9 @@ export const AnnotationOperate = (props: Props) => {
                     className="pictureBottomForm"
                     labelAlign="left"
                     layout="horizontal"
+                    onFinish={onFinish}
                     colon={false}
+                    form={form}
                 >
                     {/*标注对象*/}
                     <Form.Item
@@ -165,9 +387,12 @@ export const AnnotationOperate = (props: Props) => {
                         className="pictureFormItem"
                     >
                         <Select
+                            allowClear={true}
                             placeholder="请选择标注对象"
-                            defaultValue={null}
-                            open={false}
+                            options={[
+                                { value: '教师', label: '教师' },
+                                { value: '学生', label: '学生' },
+                            ]}
                         />
 
                     </Form.Item>
@@ -178,21 +403,22 @@ export const AnnotationOperate = (props: Props) => {
                         className="pictureFormItem"
                     >
                         <Select
-                            placeholder={`请选择`}
+                            allowClear={true}
+                            placeholder={`请选择表情`}
+                            options={props.labels}
                         />
                     </Form.Item>
                     {/*对齐*/}
                     <Form.Item
                         label={<span style={{color: '#B0B0B0'}}>对齐:</span>}
-                        name="align"
+                        name="align_user"
                         className="pictureFormItem"
                     >
                         <Select 
                             placeholder="对齐人"
                             mode="multiple"
-                            showSearch={false}
-                            open={false}
-                            allowClear={false}
+                            allowClear={true}
+                            disabled={true}
                         />
                     </Form.Item>
                     {/*    按钮组    */}

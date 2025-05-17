@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Form, Input, Select } from "antd";
 import DataTable from "@/components/Common/dataTable";
 import './index.scss'
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ResourceLabel } from "@/constants/list";
+import { setLoading } from "@/store/actions/photoAction";
 
 const currentStyle = {
     color: '#ffffff',
@@ -14,6 +15,14 @@ const Resources = () => {
 
     const [form] = Form.useForm();
     const loading = useSelector((state: RootState) => state.phote.loading)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        setTimeout(() => {
+            dispatch(setLoading(false))
+        }, 1000)
+    }, [])
+
     const onFinish = async() => {
         // console.log(data)
         console.log(form.getFieldsValue())

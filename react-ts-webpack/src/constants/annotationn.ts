@@ -14,14 +14,17 @@ export interface REC {
     h: number; // 高
     type: number; // 是否选中
     index: number; // 索引
-    annotator: string; // 注释者
-    pictureId: string; // 图片id
-    targetId?: string;
-    userId?: string;
+    annotator?: string; // 注释者
+    pictureId: number; // 图片id
+    target?: string;  // 目标
+    userId?: string; // 对齐人
     name?: string; // 名称
     isNew: boolean; // 是否是新添加的
     label?: string; // 标签
-    labelValue?: string; // 标签值
+    labelValue?: number; // 标签值
+    confirm?: number,
+    align?: number,
+    color?: string
 }
 
 export interface CurObj {

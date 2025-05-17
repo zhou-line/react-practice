@@ -85,3 +85,52 @@ export function deleteImages(data: any) {
     data
   })
 }
+
+
+export function addAnnotation(data: any) {
+  return request({
+    url: '/apps/add_annotation',
+    method: 'post',
+    data
+  })
+}
+
+export function editAnnotation(data: any) {
+  return request({
+    url: '/apps/edit_annotation',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteAnnotations(data: any) {
+  return request({
+    url: '/apps/delete_annotations',
+    method: 'post',
+    data
+  })
+}
+
+export function getAnnotations(params: any) {
+  return request({
+    url: '/apps/get_annotations',
+    method: 'get',
+    params
+  })
+}
+
+export function confirmAnnotations(data: any) {
+  return request({
+    url: '/apps/confirm_annotations',
+    method: 'post',
+    data
+  })
+}
+
+export function autoAnnotations(data: any) {
+  return request({
+    url: '/apps/auto_annotations',
+    method: 'post',
+    data
+  })
+}

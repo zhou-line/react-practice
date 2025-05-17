@@ -14,7 +14,8 @@ import ConfirmDialog from '@/components/Common/ConfirmDialog';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setSelectedIndex } from '@/store/actions/photoAction';
 import { RootState } from '@/store/store';
-import { getTheImage } from '@/api/app';
+import { addAnnotation, deleteAnnotations, getAnnotations, getLabels, getTheImage } from '@/api/app';
+import { getRec } from '@/utils/tools';
 
 const AnnotationComponent = () => {
 
@@ -23,12 +24,12 @@ const AnnotationComponent = () => {
     const [recArrs, setRecArrs] = useState<Array<REC>>([]);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openModel, setOpenModel] = useState(false);
-    const [data, setData] = useState<Array<REC>>([]);
     const messageApi = useSelector((state: RootState) => state.phote.messageApi)
     const loading = useSelector((state: RootState) => state.phote.loading)
     const { userId } = useParams()
     const [pic, setPic] = useState<any>(null)
     const [imgSrc, setImgSrc] = useState('') 
+    const [labels, setLabels] = useState<any>([])
 
     const dispatch = useDispatch()
 
@@ -49,17 +50,31 @@ const AnnotationComponent = () => {
 
     useEffect(() => {
         const init = async () => {
-            const res = await getTheImage({id: userId})
-            const picData = res.data
+            const [image, labels, annotation] = await Promise.all([
+                getTheImage({id: userId}),
+                getLabels(),
+                getAnnotations({picId: userId})
+            ])
+            const recs = annotation.data
+            const picData = image.data
             setPic(picData)
+            const values = []
+            for (const label of labels.data) {
+                values.push({
+                    value: label.id,
+                    label: label.title
+                })
+            }
+            setLabels(values)
             setImgSrc(imageUrlPre + picData.picture_file)
-            setRecArrs([])
-
+            
+            setRecArrs(getRec(recs))
             dispatch(setLoading(false))
 
         }
         init()
     }, []);
+
 
     const changeMode = (mode: string) => {
         setMode(mode);
@@ -100,8 +115,7 @@ const AnnotationComponent = () => {
             h: Math.abs(e.offsetY - curObj.y), // 高
             type: 0, // 类型
             index: recArrs.length + 1,
-            annotator: '1',
-            pictureId: '2',
+            pictureId: Number(userId),
             isNew: true
         };
         // 防止误触
@@ -112,24 +126,38 @@ const AnnotationComponent = () => {
     }
 
 
-    const deleteSelectedRec = (recArrs: REC[]) => {
+    const deleteSelectedRec = async (recArrs: REC[]) => {
         const ids: string[] = [];
         const deleteData = recArrs.filter(item => item.type === 0);
         deleteData.forEach(item => {
             ids.push(item.id);
         });
-        const newRecArrs = recArrs.filter(item => !ids.includes(item.id));
-        setRecArrs([...newRecArrs])
-        setData([...newRecArrs])
-        messageApi.success('删除成功')
-        
+        const res = await deleteAnnotations({
+            ids: ids,
+            picId: userId
+        }) as any
+        if (res.code === 200) {
+            const newRecArrs = recArrs.filter(item => !ids.includes(item.id));
+            dispatch(setSelectedIndex(-1))
+            setRecArrs([...newRecArrs])
+            messageApi.success('删除成功')
+        }
     };
 
-    const ok = (is: boolean) => {
+    const ok = async (is: boolean, info: any) => {
         if (is) {
-            setData(recArrs)
+            const labelData = labels.filter((item: any) => item.value === info.label)
+            const theRec = recArrs[recArrs.length - 1]
+            theRec.label = labelData[0].label
+            theRec.labelValue = labelData[0].value
+            theRec.target = info.target
+
             dispatch(setSelectedIndex(recArrs.length - 1))
-            messageApi.success('新增成功')
+            const res = await addAnnotation(theRec) as any
+            if (res?.code === 200) {
+                messageApi.success('新增成功')
+                theRec.id = res.data.id
+            }
         } 
         setOpenModel(false)
     }
@@ -160,6 +188,7 @@ const AnnotationComponent = () => {
             rec.type = 0;
             dispatch(setSelectedIndex(index))
             curObj.index = index;
+
             return;
         }
     }
@@ -194,15 +223,24 @@ const AnnotationComponent = () => {
                                     />
                                 </div>
                                 <div className='menu-container'>
-                                    <AnnotationMenu changeMode={changeMode}/>
+                                    <AnnotationMenu 
+                                        setRecArrs={setRecArrs}
+                                        changeMode={changeMode}
+                                        pic={pic}
+                                        labels={labels}
+                                    />
                                 </div>
                             </Spin>  
                         </Content>
                     </Layout>
                     <Sider width='25%'>
-                        <AnnotationOperate 
-                            data={data}
+                        <AnnotationOperate
+                            picId={userId}
+                            data={recArrs}
                             highLight={highLight}
+                            labels={labels}
+                            loading={loading}
+                            setRecArrs={setRecArrs}
                         />
                     </Sider>
                 </Layout>
@@ -210,6 +248,7 @@ const AnnotationComponent = () => {
                     open={openModel}
                     ok={ok}
                     cancel={cancel}
+                    labels={labels}
                 />
                 <ConfirmDialog 
                     openConfirm={openConfirm} 

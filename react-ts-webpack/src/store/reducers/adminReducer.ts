@@ -2,6 +2,7 @@ const initialState = {
     auth: '',
     menuKey: 'home',
     superuser: false,
+    username: ''
 };
 
 const adminReducer = (state = initialState, action: any) => {
@@ -20,6 +21,11 @@ const adminReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 superuser: action.payload
+            };
+        case 'SET_USERNAME':
+            return {
+                ...state,
+                username: action.payload
             };
         default:
             return state;

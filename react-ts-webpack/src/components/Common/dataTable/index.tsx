@@ -59,7 +59,7 @@ const DataTable = (props: Props) => {
         <Col span={6}>{props.type.resource}</Col>
         {type && <Col span={2} title={props.type.num} className='col-item'>{props.type.num}</Col>}
         {!type && <Col span={2} title={props.type.emo} className='col-item'>{props.type?.emo}</Col>}
-        <Col span={3} className='center-item'>操作</Col>
+        {type && <Col span={3} className='center-item'>操作</Col>}
       </Row>
       <Row>
         <List
@@ -75,7 +75,7 @@ const DataTable = (props: Props) => {
           }}
           pagination={{
             pageSize: 14,
-            total: 20,
+            total: props.data.length,
             position: 'bottom',
             align: 'center',
             size: 'small',
@@ -107,7 +107,7 @@ const DataTable = (props: Props) => {
                 <Col span={6}>{item.study_group}</Col>
                 <Col span={6}>{item.user}</Col>
                 <Col span={2} title={type ? props.type.num : props.type.emo} className='col-item'>{item.annotation_num}</Col>
-                <Col span={3} className='center-item'>{
+                {type && <Col span={3} className='center-item'>{
                   is_superuser && <div>
                     {!item.is_confirm && <CheckOutlined title='确认' onClick={async () => {
                        props.setLoading(true)
@@ -127,7 +127,7 @@ const DataTable = (props: Props) => {
                       }
                     }}></CloseOutlined>
                   </div>
-                }</Col>
+                }</Col>}
               </Row>
             </List.Item>
           )}

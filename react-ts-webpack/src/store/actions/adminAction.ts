@@ -19,3 +19,10 @@ export const setSuperuser = (superuser: boolean) => {
     };
 };
 
+export const setUsername = (username: string) => {
+    return {
+        type: 'SET_USERNAME',
+        payload: username
+    };
+};
+

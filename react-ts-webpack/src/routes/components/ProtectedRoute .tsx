@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {Navigate, useLocation} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import { getSession } from "@/api/user";
-import { setAuth, setSuperuser } from "@/store/actions/adminAction";
+import { setAuth, setSuperuser, setUsername } from "@/store/actions/adminAction";
 import { setLoading } from "@/store/actions/photoAction";
 
 interface LoginResponse {
@@ -10,8 +10,8 @@ interface LoginResponse {
     message: string;
     token: string;
     is_authenticated: boolean;
-    is_superuser: boolean
-    
+    is_superuser: boolean;
+    username: string;
 }
 
 // 优化后的 ProtectedRoute 组件
@@ -28,6 +28,7 @@ const ProtectedRoute = (props: any) => {
                 dispatch(setLoading(true))
                 const session = await getSession();
                 const value = session as any as LoginResponse;
+                dispatch(setUsername(value.username))
                 dispatch(setSuperuser(value.is_superuser))
                 setIsAuth(value.is_authenticated)
                 if (value.is_authenticated) {

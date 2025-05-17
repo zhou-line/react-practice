@@ -4,6 +4,7 @@ import { CurObj, Mode, REC } from "@/constants/annotationn";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedIndex } from "@/store/actions/photoAction";
+import { editAnnotation } from "@/api/app";
 
 interface Props {
     mode: string;
@@ -427,6 +428,7 @@ export const AnnotationShow = (props: Props) => {
         // 得到落点所在框的序数
         curObj.index = getEventIndex(curObj.x, curObj.y)
         dispatch(setSelectedIndex(curObj.index))
+        
         // 【判断是否是多选】
         if (!e.ctrlKey) {
             recArrs.forEach(item => {
@@ -497,13 +499,12 @@ export const AnnotationShow = (props: Props) => {
     }
 
     // 鼠标抬起事件
-    const upFunction = (e: any) => {
+    const upFunction = async (e: any) => {
         const target = e.nativeEvent
         const focusIndex = getEventIndex(target.offsetX, target.offsetY)
         if (!e.ctrlKey) {
             if (curObj.draw && props.mode === Mode.Action) {
                 // 添加框图
-                console.log(33333)
                 curObj.index = recArrs.length - 1
                 props.addToRecs(target, curObj)
             } else if (curObj.draw && props.mode === Mode.Default) {
@@ -522,13 +523,33 @@ export const AnnotationShow = (props: Props) => {
                 }
             }
         }
-        
+
+
+        if ((curObj.resize || curObj.drag) && curObj.index > -1) {
+            curObj.draw = false;
+            curObj.resize = false
+            curObj.drag = false
+            const rec = recArrs[curObj.index]
+            const submit = {
+                id: rec.id,
+                pictureId: rec.pictureId,
+                annotator: rec.annotator,
+                target: rec.target,
+                left: rec.x,
+                top: rec.y,
+                width: rec.w,
+                height: rec.h,
+                label: rec.label,
+                labelValue: rec.labelValue
+            }
+            props.setRecArrs([...props.recArrs])
+            await editAnnotation(submit)
+        }
 
         curObj.draw = false;
         curObj.resize = false
         curObj.drag = false
-
-       
+             
         // 重绘
         clearCanvas()
         drawOldRect(recArrs)

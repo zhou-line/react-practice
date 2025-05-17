@@ -8,6 +8,7 @@ import { AnalysisLabel } from "@/constants/list";
 import { getCookie } from "@/utils/auth";
 import { getImages, getStudyGroup } from "@/api/app";
 import { setLoading } from "@/store/actions/photoAction";
+import { isChineseRegex } from "@/utils/tools";
 
 const currentStyle = {
     color: '#ffffff',
@@ -97,7 +98,7 @@ const Analysis = () => {
                 label={<span style={currentStyle}>标注数量</span>}
                 name="number"
             >
-                <InputNumber min={0} max={10} step={1} defaultValue={0}/>
+                <InputNumber min={0} step={1} defaultValue={0}/>
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={pageLoading}>搜索</Button>
@@ -112,6 +113,12 @@ const Analysis = () => {
                     beforeUpload={(file) => {
                         setPageLoading(true)
                         const isPNG = file.type === 'image/png';
+                        const isChinese = isChineseRegex(file.name)
+                        if (isChinese) {
+                            messageApi.error('图片名称不能包含中文');
+                            setPageLoading(false)
+                            return !isChinese || Upload.LIST_IGNORE;
+                        }
                         if (!isPNG) {
                             messageApi.error('图片格式错误，请上传PNG格式');
                             setPageLoading(false)
