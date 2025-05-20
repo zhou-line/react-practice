@@ -1,25 +1,26 @@
 import React, {useState} from "react";
-import {Button, Col, Form, InputNumber, Modal, Radio, Row, Space} from "antd";
+import {Button, Col, Form, InputNumber, Modal, Popconfirm, Radio, Row, Space} from "antd";
 import {
     PlusCircleOutlined,
 } from "@ant-design/icons";
 import "./index.scss"
 import MouseIcon from "@/assets/svg/MouseIcon";
 import AutoIcon from "@/assets/svg/AutoIcon";
-import PartIcon from "@/assets/svg/PartIcon";
-import AllIcon from "@/assets/svg/AllIcon";
 import { Mode } from "@/constants/annotationn";
-import { autoAnnotations } from "@/api/app";
+import { allAlign, autoAnnotations } from "@/api/app";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/store/actions/photoAction";
 import { getRec } from "@/utils/tools";
 import { RootState } from "@/store/store";
+import PartIcon from "@/assets/svg/PartIcon";
 
 interface AnnotationMenuProps {
     changeMode: (mode: Mode) => void;
     pic: any,
     labels: any,
-    setRecArrs: any
+    setRecArrs: any,
+    picId: any,
+    recArrs: any
 }
 
 export const AnnotationMenu = (props: AnnotationMenuProps) => {
@@ -41,12 +42,27 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
         setIsPartModalVisible(false)
     }
 
-    const partAlign = () => {
-        console.log(partForm.getFieldsValue())
-    }
 
-    const allAlign = () => {
-        console.log(allForm.getFieldsValue())
+    const all_align = async () => {
+        dispatch(setLoading(true))
+        const ids: string[] = [];
+        const deleteData = props.recArrs.filter((item: any) => item.type === 0);
+        deleteData.forEach((item: any) => {
+            ids.push(item.id);
+        });
+        const res = await allAlign({
+            ids: ids,
+            picId: props.picId,
+           ...partForm.getFieldsValue()
+        }) as any
+
+        if (res.code === 200) {
+            setClickBtn(false);
+            props.setRecArrs(getRec(res.data))
+            dispatch(setLoading(false))
+            cancel()
+        }
+
     }
 
     return (
@@ -87,14 +103,10 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                 {/*操作标签区*/}        
                 <Col flex={9}>
                     <Space className='menu-right'>
-                        <Button className="pic-btn" type="text" title='自动框选'
-                            icon={ 
-                                <AutoIcon
-                                    style={{fontSize: "21px"}}
-                                    props={{color: '#848482'}}
-                                />
-                            }
-                            onClick={async () => {
+                        <Popconfirm
+                            title="智能标注"
+                            description="该操作不可逆，是否继续?"
+                            onConfirm={async () => {
                                 dispatch(setLoading(true))
                                 const res = await autoAnnotations({
                                     pictureId: props.pic.id,
@@ -104,24 +116,43 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                                 props.setRecArrs(getRec(res.data))
                                 messageApi.success('智能标注成功')
                                 dispatch(setLoading(false))
-                            }} 
-                        />
-                        <Button className="pic-btn" type="text" title='局部对齐设置'
-                            icon={
-                                <PartIcon 
-                                    style={{fontSize: " 21px"}}
-                                />
-                            }
-                            onClick={() => setIsPartModalVisible(true)} 
-                        />
-                        <Button className="pic-btn" type="text" title='全部对齐设置'
+                            }}
+                            onCancel={() => {}}
+                            okText="确定"
+                            cancelText="取消"
+                        >
+                            <Button className="pic-btn" type="text" title='自动框选'
+                                icon={ 
+                                    <AutoIcon
+                                        style={{fontSize: "21px"}}
+                                        props={{color: '#848482'}}
+                                    />
+                                }
+                            />
+                        </Popconfirm>
+                        <Popconfirm
+                            title="对齐设置"
+                            description="该操作不可逆，是否继续?"
+                            onConfirm={() => {
+                                setIsPartModalVisible(true)
+                            }}
+                            onCancel={() => {}}
+                            okText="确定"
+                            cancelText="取消"
+                        >
+                            <Button className="pic-btn" type="text" title='局部对齐设置'
+                                icon={<PartIcon style={{fontSize: " 19px"}}/>}
+                            >
+                            </Button>
+                        </Popconfirm>
+                        {/* <Button className="pic-btn" type="text" title='全部对齐设置'
                             icon={
                                 <AllIcon 
                                     style={{fontSize: " 19px"}}
                                 />
                             }
                             onClick={() => setIsAllModalVisible(true)} 
-                        />
+                        /> */}
                     </Space>
                 </Col>
                 
@@ -137,7 +168,7 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                         <Button 
                             key="back" 
                             onClick={() => {
-                                partAlign()
+                                all_align()
                             }}
                         >
                             确认
@@ -178,7 +209,7 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                         <Button 
                             key="back" 
                             onClick={() => {
-                                allAlign()
+                                all_align()
                             }}
                         >
                             确认

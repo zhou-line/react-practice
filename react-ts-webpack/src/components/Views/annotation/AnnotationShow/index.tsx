@@ -12,7 +12,7 @@ interface Props {
     recArrs: REC[],
     setRecArrs: (recArrs: REC[]) => void,
     addToRecs: (e: any, curObj: any) => void,
-    curObj: CurObj,
+    curObj: CurObj
 }
 
 export const AnnotationShow = (props: Props) => {
@@ -40,7 +40,6 @@ export const AnnotationShow = (props: Props) => {
             setShownHeight(imageRef.current.height);
             content?.drawImage(imageRef.current, 0, 0, imageRef.current.width, imageRef.current.height);
         };
-        console.log(props.imageSrc)
         imageRef.current.src = props.imageSrc;
     }, [props.imageSrc])
 
@@ -154,6 +153,7 @@ export const AnnotationShow = (props: Props) => {
     // 移动矩形框/缩放矩形框
     const moveOrScale = (e: any) => {
         const index = getEventIndex(e.offsetX, e.offsetY)
+        console.log(index)
         let side = -1
         if (props.mode === Mode.Action) {
             side = 0
@@ -268,9 +268,10 @@ export const AnnotationShow = (props: Props) => {
             if (recArrs[i].w > 2 && recArrs[i].h > 2) {
                 ctx2d.beginPath();
                 ctx2d.setLineDash([]);
-                ctx2d.strokeStyle = "#1D8CF8";  // 矩形框的线条颜色
+                ctx2d.strokeStyle = recArrs[i].color ?? "#1D8CF8";  // 矩形框的线条颜色
                 if (recArrs[i].type === 0) {
                     ctx2d.setLineDash([20, 5])
+                    console.log(recArrs[i].color)
                     ctx2d.strokeStyle = "rgb(255, 0, 0)";  // 矩形框的线条颜色
                 }
                 ctx2d.lineWidth = 2;    // 矩形框的线条宽度
@@ -496,6 +497,8 @@ export const AnnotationShow = (props: Props) => {
                 }
             }
         })
+
+        props.setRecArrs([...recArrs])
     }
 
     // 鼠标抬起事件

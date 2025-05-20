@@ -128,7 +128,7 @@ module.exports = {
         // 把 process.env.BASE_ENV注入到业务代码里面,就可以通过该环境变量设置对应环境的接口地址和其他数据
         new webpack.DefinePlugin({
             'process.env.BASE_ENV': JSON.stringify(process.env.BASE_ENV),
-            'process.env.REACT_APP_PROJECT_NAME': JSON.stringify("课堂教学智能分析系统")
+            'process.env.REACT_APP_PROJECT_NAME': JSON.stringify("课堂教学智能标注系统")
         }),
         new ESLintPlugin({
             extensions: ['js', 'jsx', 'ts', 'tsx'], // 检查的文件扩展名

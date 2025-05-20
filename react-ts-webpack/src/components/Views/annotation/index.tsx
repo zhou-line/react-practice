@@ -30,6 +30,7 @@ const AnnotationComponent = () => {
     const [pic, setPic] = useState<any>(null)
     const [imgSrc, setImgSrc] = useState('') 
     const [labels, setLabels] = useState<any>([])
+    const username = useSelector((state: RootState) => state.admin.username)
 
     const dispatch = useDispatch()
 
@@ -116,7 +117,8 @@ const AnnotationComponent = () => {
             type: 0, // 类型
             index: recArrs.length + 1,
             pictureId: Number(userId),
-            isNew: true
+            isNew: true,
+            annotator: username
         };
         // 防止误触
         if (rec.w > 4 && rec.h > 4) {
@@ -224,9 +226,11 @@ const AnnotationComponent = () => {
                                 </div>
                                 <div className='menu-container'>
                                     <AnnotationMenu 
+                                        recArrs={recArrs} 
                                         setRecArrs={setRecArrs}
                                         changeMode={changeMode}
                                         pic={pic}
+                                        picId={userId}
                                         labels={labels}
                                     />
                                 </div>

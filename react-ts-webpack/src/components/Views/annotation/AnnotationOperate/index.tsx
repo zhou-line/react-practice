@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
-import { Button, Form, List, Select, Tabs, Tag } from 'antd';
+import { Button, Form, List, Popconfirm, Select, Tabs, Tag } from 'antd';
 import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { DraggableIconGray } from '@/assets/svg/DraggableIconGray';
 import { AllConfirmedIconGray } from '@/assets/svg/AllConfirmedIconGray';
@@ -44,7 +44,6 @@ export const AnnotationOperate = (props: Props) => {
             if (res.data[0].is_superuser) {
                 res.data[0].username = '所有'            
             }
-            console.log(res.data)
             setUsers(res.data)
         }
         getUser()
@@ -72,10 +71,10 @@ export const AnnotationOperate = (props: Props) => {
 
     useEffect(() => {
         if (selectedIndex > -1) {
-            console.log(props.data[selectedIndex])
             form.setFieldsValue({
                 target: props.data[selectedIndex]?.target,
-                expression: props.data[selectedIndex]?.labelValue
+                expression: props.data[selectedIndex]?.labelValue,
+                align_user: props.data[selectedIndex]?.annotator
             })
         } else {
             form.resetFields()
@@ -93,9 +92,10 @@ export const AnnotationOperate = (props: Props) => {
     
     const operations = (
         <div className="confirmIconGroup">
-            <Button className="pic-btn" type="text" title='全部确认'
-                icon={<AllConfirmedIconGray style={{fontSize: " 19px"}}/>}
-                onClick={async () => {
+            <Popconfirm
+                title="全部确认设置"
+                description="该操作不可逆，是否继续?"
+                onConfirm={async () => {
                     const ids = props.data.map(item => item.id)
                     setLoading(true)
                     const submit = {
@@ -113,7 +113,14 @@ export const AnnotationOperate = (props: Props) => {
                     dispatch(setSelectedIndex(-1))
                     setLoading(false)
                 }}
-            />
+                onCancel={() => {}}
+                okText="确定"
+                cancelText="取消"
+            >
+                <Button className="pic-btn" type="text" title='全部确认'
+                    icon={<AllConfirmedIconGray style={{fontSize: " 19px"}}/>}
+                />
+            </Popconfirm>
             <Button className="pic-btn" type="text" title='未对齐'
                 icon={<UnalignedAndNotConfirmedIconGray/>}
                 onClick={async () => {
@@ -217,7 +224,7 @@ export const AnnotationOperate = (props: Props) => {
     };
 
     const onFinish = async (values: any) => {
-        console.log('Success:', values);
+        setLoading(true)
         const label = props.labels.filter((item: any) => item.value === values.expression)[0]
         const submit = {
             id: props.data[selectedIndex].id,
@@ -231,6 +238,7 @@ export const AnnotationOperate = (props: Props) => {
         props.data[selectedIndex].target = values.target
         props.setRecArrs([...props.data])
         await editAnnotation(submit)
+        setLoading(false)
     };
 
 
@@ -304,7 +312,7 @@ export const AnnotationOperate = (props: Props) => {
                                     renderItem={(item: REC, index: number) => (
                                         <List.Item 
                                             className='sider-components-content-list-item'
-                                            style={{color: index === selectedIndex ? '#ffffff' : '#848482'}}
+                                            style={{color: item.type === 0 ? '#ffffff' : '#848482', visibility: item.label ? 'visible':'hidden'}}
                                             onClick={(e: any) =>{
                                                 e.stopPropagation();
                                                 props.highLight(item)
@@ -327,27 +335,19 @@ export const AnnotationOperate = (props: Props) => {
                                             >{`标注人：(${item.annotator})`}</span>
                                             {
                                                 item.confirm ?
-                                                <span title={`取消确认`}>
-                                                    <CloseCircleOutlined 
-                                                        style={{marginTop: 4}}
-                                                        onClick={async () => {
-                                                            setLoading(true)
-                                                            const submit = {
-                                                                ids: [item.id],
-                                                                confirm: 0,
-                                                            }
-                                                            await confirmAnnotations(submit)
-                                                            item.confirm = 0
-                                                            setLoading(false)
-                                                        }}
-                                                    />
-                                                </span> :
-                                                <span title={`确认`}>
+                                                <span title={`已确认`}>
                                                     <CheckCircleOutlined 
                                                         style={{marginTop: 4}}
-                                                        onClick={async () => {
+                                                    />
+                                                </span> :
+                                                <span title={`是否确认`}>
+                                                    <Popconfirm
+                                                        title="确认设置"
+                                                        description="该操作不可逆，是否继续?"
+                                                        onConfirm={async () => {
                                                             setLoading(true)
                                                             const submit = {
+                                                                picId: props.picId,
                                                                 ids: [item.id],
                                                                 confirm: 1,
                                                             }
@@ -356,7 +356,14 @@ export const AnnotationOperate = (props: Props) => {
                                                             props.setRecArrs([...props.data])
                                                             setLoading(false)
                                                         }}
-                                                    />
+                                                        onCancel={() => {}}
+                                                        okText="确定"
+                                                        cancelText="取消"
+                                                    >
+                                                        <CloseCircleOutlined 
+                                                            style={{marginTop: 4}}
+                                                        />
+                                                    </Popconfirm>
                                                 </span>
                                             }
                                         </List.Item>
@@ -415,7 +422,7 @@ export const AnnotationOperate = (props: Props) => {
                         className="pictureFormItem"
                     >
                         <Select 
-                            placeholder="对齐人"
+                            placeholder="标注人"
                             mode="multiple"
                             allowClear={true}
                             disabled={true}
@@ -423,10 +430,6 @@ export const AnnotationOperate = (props: Props) => {
                     </Form.Item>
                     {/*    按钮组    */}
                     <div className='btnGroup'>
-                        <Button
-                            className="cancel-button"
-                            size='middle'
-                        > 取消</Button>
                         <Button
                             className="submit-btn"
                             type="primary"

@@ -38,7 +38,7 @@ function Home() {
                 </Col>
                 <Col xs={24} sm={12} lg={8}>
                     <div className="chart-card">
-                        <RadarGraph name={'整体一周框图类型分布'}/>
+                        <RadarGraph name={'整体框图类型分布'}/>
                     </div>
                 </Col>
                 <Col xs={24} sm={12} lg={8}>

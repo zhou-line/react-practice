@@ -21,6 +21,7 @@ const Analysis = () => {
     const [data, setData] = useState([])
     const [dataGroups, setDataGroups] = useState<any>([])
     const [current, setCurrent] = useState(1)
+    const [total, setTotal] = useState(0)
 
     const dispatch = useDispatch()
 
@@ -54,6 +55,7 @@ const Analysis = () => {
             }
             setDataGroups(labels)
             setData(images.data.data)
+            setTotal(images.data.total)
             dispatch(setLoading(false))
             setPageLoading(false)
         }
@@ -98,7 +100,7 @@ const Analysis = () => {
                 label={<span style={currentStyle}>标注数量</span>}
                 name="number"
             >
-                <InputNumber min={0} step={1} defaultValue={0}/>
+                <InputNumber min={0} step={1}/>
             </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={pageLoading}>搜索</Button>
@@ -114,14 +116,15 @@ const Analysis = () => {
                         setPageLoading(true)
                         const isPNG = file.type === 'image/png';
                         const isChinese = isChineseRegex(file.name)
+                        if (!isPNG) {
+                            messageApi.error('图片格式错误，请上传PNG格式');
+                            setPageLoading(false)
+                            return isPNG || Upload.LIST_IGNORE;
+                        }
                         if (isChinese) {
                             messageApi.error('图片名称不能包含中文');
                             setPageLoading(false)
                             return !isChinese || Upload.LIST_IGNORE;
-                        }
-                        if (!isPNG) {
-                            messageApi.error('图片格式错误，请上传PNG格式');
-                            setPageLoading(false)
                         }
                         return isPNG || Upload.LIST_IGNORE;
                     }}
@@ -158,6 +161,7 @@ const Analysis = () => {
                 current={current} 
                 loading={pageLoading} 
                 setLoading={setPageLoading}
+                total={total}
             />
         </div>
       </div>)

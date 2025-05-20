@@ -36,6 +36,7 @@ const ProtectedRoute = (props: any) => {
                 } else {
                     dispatch(setAuth(''));  
                 }
+                dispatch(setLoading(false))
 
             } catch {
                 window.location.href = '#/404';

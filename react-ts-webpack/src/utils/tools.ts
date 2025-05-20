@@ -38,11 +38,38 @@ export const getRec = (annotations: any) => {
             label: item.label,
             isNew: false,
             confirm: item.confirm,
-            align: item.align
+            align: item.align,
+            color: item.color
         }
         array.push(rec)
     })
     return array
+}
+
+export const getAutoRec = (annotations: any) => {
+  const array: any = []
+  annotations.forEach((item: any) => {
+      const rec = {
+          id: item.id,
+          x: item.left, // x点
+          y: item.top, // y点
+          w: item.width, // 宽
+          h: item.height, // 高
+          type: 0, // 类型
+          index: -1,
+          annotator: item.annotator,
+          pictureId: item.picture_id,
+          target: item?.target,
+          labelValue: item.label_id,
+          label: item.label,
+          isNew: false,
+          confirm: item.confirm,
+          align: item.align,
+          color: item.color
+      }
+      array.push(rec)
+  })
+  return array
 }
 
 export const isChineseRegex = (filename: string) => {

@@ -134,3 +134,43 @@ export function autoAnnotations(data: any) {
     data
   })
 }
+
+export function getSclies(params: any) {
+  return request({
+    url: '/apps/get_sclies',
+    method: 'get',
+    params
+  })
+}
+
+export function exportSlices(data: any) {
+  return request({
+    url: '/apps/export_slices',
+    method: 'post',
+    data
+  })
+}
+
+export function allAlign(data: any) {
+  return request({
+    url: '/apps/all_align',
+    method: 'post',
+    data
+  })
+}
+
+export function getALLData(data: any) {
+  return request({
+    url: '/apps/get_all_data',
+    method: 'post',
+    data
+  })
+}
+
+export function getPersonData(data: any) {
+  return request({
+    url: '/apps/get_person_data',
+    method: 'post',
+    data
+  })
+}

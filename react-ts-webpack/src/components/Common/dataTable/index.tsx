@@ -17,7 +17,8 @@ interface Props {
   setCurrent: any,
   current: number,
   loading: boolean,
-  setLoading: any
+  setLoading: any,
+  total: number
 }
 
 const DataTable = (props: Props) => {
@@ -75,7 +76,7 @@ const DataTable = (props: Props) => {
           }}
           pagination={{
             pageSize: 14,
-            total: props.data.length,
+            total: props.total,
             position: 'bottom',
             align: 'center',
             size: 'small',
@@ -104,9 +105,10 @@ const DataTable = (props: Props) => {
                   <div>{item.name}</div>
                   }
                 </Col>
-                <Col span={6}>{item.study_group}</Col>
-                <Col span={6}>{item.user}</Col>
-                <Col span={2} title={type ? props.type.num : props.type.emo} className='col-item'>{item.annotation_num}</Col>
+                {type ? <Col span={6}>{item.study_group}</Col> : <Col span={6}>{item.group}</Col>}
+                {type ? <Col span={6}>{item.user}</Col> : <Col span={6}>{item.pic}</Col>}
+                {type ? <Col span={2} title={type ? props.type.num : props.type.emo} className='col-item'>{item.annotation_num}</Col> : 
+                <Col span={2} title={type ? props.type.num : props.type.emo} className='col-item'>{item.label}</Col>}
                 {type && <Col span={3} className='center-item'>{
                   is_superuser && <div>
                     {!item.is_confirm && <CheckOutlined title='确认' onClick={async () => {

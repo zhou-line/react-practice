@@ -22,3 +22,9 @@
     flex: 1;
     display: flex;
 }
+
+.item-select {
+    .ant-select-selection-item {
+        color: #000000 !important;
+    }
+}

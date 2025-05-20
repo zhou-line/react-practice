@@ -40,13 +40,13 @@ const RadarGraph = (props: Props) => {
         radar: {
           // shape: 'circle',
           indicator: [
-            { name: 'anger', max: 500 },
-            { name: 'contempt', max: 500 },
-            { name: 'disgust', max: 500 },
-            { name: 'fear', max: 500 },
-            { name: 'happy', max: 500 },
-            { name: 'sadness', max: 500 },
-            { name: 'surprise', max: 500 }
+            { name: '愤怒', max: 500, id: 14},
+            { name: '平静', max: 500, id: 19},
+            { name: '厌恶', max: 500, id: 16},
+            { name: '害怕', max: 500, id: 17},
+            { name: '开心', max: 500, id: 8},
+            { name: '伤心', max: 500, id: 12},
+            { name: '惊喜', max: 500, id: 18}
           ]
         },
         series: [
