@@ -10,6 +10,7 @@ echarts.use([GridComponent, LineChart, CanvasRenderer, UniversalTransition, Titl
 
 interface Prosp {
   name: string
+  data: any
 }
 
 const LineGraph = (props: Prosp) => {
@@ -32,7 +33,6 @@ const LineGraph = (props: Prosp) => {
         tooltip:{
           trigger: 'axis',
           formatter:function(datas: any){
-            console.log(datas)
             return datas[0].data + ""
           }
         },
@@ -51,7 +51,7 @@ const LineGraph = (props: Prosp) => {
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
+            data: props.data,
             type: 'line',
             label:{
               show:true,
@@ -81,7 +81,7 @@ const LineGraph = (props: Prosp) => {
       };
 
     }
-  }, []); // 空依赖数组表示这个effect只在组件挂载和卸载时运行
+  }, [props.data]); // 空依赖数组表示这个effect只在组件挂载和卸载时运行
 
   return (
     <div ref={chartRef} style={{ width: '100%', height: '100%' }}></div> // 使用ref属性将DOM元素与ref关联起来

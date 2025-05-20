@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import BarGraph from "@/components/Common/barGraph";
 import {CloseCircleFilled} from "@ant-design/icons";
-import { getLabels, getStudyGroup, handleLabel, handleStudyGroup } from "@/api/app";
+import { getLabels, getPersonData, getStudyGroup, handleLabel, handleStudyGroup } from "@/api/app";
 import { setLoading, setStudyGroup } from "@/store/actions/photoAction";
 import { getSession } from "@/api/user";
 
@@ -43,16 +43,25 @@ const User = () => {
     const [groups, setGroups] = useState([])
     const [permission, setPermission] = useState<any>(null)
 
+    const [bar, setBar] = useState([])
+    const [line, setLine] = useState([])
+
     useEffect(() => {
         const init = async () => {
-            const [labelValue, groupValue, session] = await Promise.all([getLabels(), getStudyGroup(), getSession()])
+            const [labelValue, groupValue, session, personData] = await Promise.all([
+                getLabels(), 
+                getStudyGroup(), 
+                getSession(),
+                getPersonData()
+            ])
             for (const value of groupValue.data) {
                 if (value.is_active) {
                     dispatch(setStudyGroup(value.title))
                 }
             }
             setPermission(session)
-            console.log(session)
+            setBar(personData.data.bar_data)
+            setLine(personData.data.line_data)
             setLabels(labelValue.data)
             setGroups(groupValue.data)
             dispatch(setLoading(false))
@@ -67,7 +76,6 @@ const User = () => {
             <Row gutter={[24, 24]} className="user-info-row">
                 <Col xs={24} lg={20}>
                     <UserInfo />
-                    
                 </Col>
                 <Col xs={24} lg={4}>
                     <div className="user-avatar">
@@ -84,14 +92,12 @@ const User = () => {
             <Row gutter={[24, 24]} wrap className="charts-row">
                 <Col xs={24} sm={12} lg={8}>
                     <div className="chart-card">
-                        {studyGroup}
-                        <BarGraph name={'个人一周框图数量'}/>
-                        {/* <LineGraph name={'个人一周导入图片'}/> */}
+                        <BarGraph name={'个人一周存在框图数量'} data={bar}/>
                     </div>
                 </Col>
                 <Col xs={24} sm={12} lg={8}>
                     <div className="chart-card">
-                        <LineGraph name={'个人一周导出切片'}/>
+                        <LineGraph name={'个人一周确认切片'} data={line}/>
                     </div>
                 </Col>
                 {permission?.is_superuser && 
@@ -243,7 +249,7 @@ const User = () => {
                                             <span>
                                                 表情标签：{item.title}
                                             </span>
-                                            <CloseCircleFilled 
+                                            {item.isDef === 0 && <CloseCircleFilled 
                                                 title="删除" 
                                                 style={{cursor: 'pointer'}}
                                                 onClick={async () => {
@@ -256,7 +262,7 @@ const User = () => {
                                                         setLabelLoading(false)
                                                     }) 
                                                 }}
-                                            />
+                                            />}
                                         </div>
                                         
                                     </List.Item>

@@ -18,6 +18,7 @@ type EChartsOption = echarts.ComposeOption<
 
 interface Props {
   name: string
+  data: any
 }
 
 
@@ -40,13 +41,13 @@ const RadarGraph = (props: Props) => {
         radar: {
           // shape: 'circle',
           indicator: [
-            { name: '愤怒', max: 500, id: 14},
-            { name: '平静', max: 500, id: 19},
-            { name: '厌恶', max: 500, id: 16},
-            { name: '害怕', max: 500, id: 17},
-            { name: '开心', max: 500, id: 8},
-            { name: '伤心', max: 500, id: 12},
-            { name: '惊喜', max: 500, id: 18}
+            { name: '愤怒', max: 250, id: 14},
+            { name: '平静', max: 250, id: 19},
+            { name: '厌恶', max: 250, id: 16},
+            { name: '害怕', max: 250, id: 17},
+            { name: '开心', max: 250, id: 8},
+            { name: '伤心', max: 250, id: 12},
+            { name: '惊喜', max: 250, id: 18}
           ]
         },
         series: [
@@ -55,7 +56,7 @@ const RadarGraph = (props: Props) => {
             type: 'radar',
             data: [
               {
-                value: [100, 200, 300, 400, 100, 100, 400],
+                value: props.data,
                 name: 'Allocated Budget'
               }
             ],
@@ -86,7 +87,7 @@ const RadarGraph = (props: Props) => {
         window.removeEventListener('resize', contenTSize, false);
       };
     }
-  }, []); // 空依赖数组表示这个effect只在组件挂载和卸载时运行
+  }, [props.data]); // 空依赖数组表示这个effect只在组件挂载和卸载时运行
 
   return (
     <div ref={chartRef} style={{ width: 'auto', height: 400 }}></div> // 使用ref属性将DOM元素与ref关联起来

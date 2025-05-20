@@ -10,7 +10,7 @@ import { Mode } from "@/constants/annotationn";
 import { allAlign, autoAnnotations } from "@/api/app";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "@/store/actions/photoAction";
-import { getRec } from "@/utils/tools";
+import { getAutoRec, getRec } from "@/utils/tools";
 import { RootState } from "@/store/store";
 import PartIcon from "@/assets/svg/PartIcon";
 
@@ -113,7 +113,7 @@ export const AnnotationMenu = (props: AnnotationMenuProps) => {
                                     picture_file: props.pic.picture_file,
                                     labels: props.labels
                                 })
-                                props.setRecArrs(getRec(res.data))
+                                props.setRecArrs(getAutoRec(res.data))
                                 messageApi.success('智能标注成功')
                                 dispatch(setLoading(false))
                             }}

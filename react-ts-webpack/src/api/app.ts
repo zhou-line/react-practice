@@ -159,18 +159,16 @@ export function allAlign(data: any) {
   })
 }
 
-export function getALLData(data: any) {
+export function getALLData() {
   return request({
     url: '/apps/get_all_data',
-    method: 'post',
-    data
+    method: 'post'
   })
 }
 
-export function getPersonData(data: any) {
+export function getPersonData() {
   return request({
     url: '/apps/get_person_data',
     method: 'post',
-    data
   })
 }

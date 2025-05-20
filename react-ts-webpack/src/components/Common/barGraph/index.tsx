@@ -8,6 +8,7 @@ echarts.use([GridComponent, BarChart, CanvasRenderer]);
 
 interface Props {
   name: string
+  data: any
 }
 
 const BarGraph = (props: Props) => {
@@ -42,7 +43,7 @@ const BarGraph = (props: Props) => {
         },
         series: [
           {
-            data: [120, 200, 150, 80, 70, 110, 130],
+            data: props.data,
             type: 'bar',
             label:{
               show:true,
@@ -72,7 +73,7 @@ const BarGraph = (props: Props) => {
         window.removeEventListener('resize', contenTSize, false);
       };
     }
-  }, []); // 空依赖数组表示这个effect只在组件挂载和卸载时运行
+  }, [props.data]); // 空依赖数组表示这个effect只在组件挂载和卸载时运行
 
   return (
     <div ref={chartRef} style={{ width: '100%', height: '100%'}}></div> // 使用ref属性将DOM元素与ref关联起来

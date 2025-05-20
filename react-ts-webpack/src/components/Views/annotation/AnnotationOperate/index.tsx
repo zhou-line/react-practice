@@ -27,6 +27,7 @@ interface Props {
 export const AnnotationOperate = (props: Props) => {
 
     const selectedIndex = useSelector<RootState, number>(state => state.phote.selectedIndex)
+    const messageApi = useSelector((state: RootState) => state.phote.messageApi)
     const superuser = useSelector<RootState, number>(state => state.admin.superuser)
     const [users, setUsers] = useState<any>([])
     const [form] = Form.useForm();
@@ -110,6 +111,7 @@ export const AnnotationOperate = (props: Props) => {
                     props.data.forEach(item => {
                         item.confirm = 1
                     })
+                    messageApi.success('全部确认成功')
                     dispatch(setSelectedIndex(-1))
                     setLoading(false)
                 }}

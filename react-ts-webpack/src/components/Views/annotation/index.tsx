@@ -131,9 +131,17 @@ const AnnotationComponent = () => {
     const deleteSelectedRec = async (recArrs: REC[]) => {
         const ids: string[] = [];
         const deleteData = recArrs.filter(item => item.type === 0);
+        let isContinue = true;
         deleteData.forEach(item => {
             ids.push(item.id);
+            if (item.confirm === 1) {
+                isContinue = false;
+            }
         });
+        if (!isContinue) {
+            messageApi.error('存在已确认的标签，无法删除')
+            return
+        }
         const res = await deleteAnnotations({
             ids: ids,
             picId: userId

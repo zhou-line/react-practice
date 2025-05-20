@@ -55,7 +55,7 @@ export const getAutoRec = (annotations: any) => {
           y: item.top, // y点
           w: item.width, // 宽
           h: item.height, // 高
-          type: 0, // 类型
+          type: item.auto === 1 ? 0: 1, // 类型
           index: -1,
           annotator: item.annotator,
           pictureId: item.picture_id,

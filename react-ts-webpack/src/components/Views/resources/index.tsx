@@ -80,10 +80,12 @@ const Resources = () => {
             return 
         }
         if (form.getFieldValue('source')) {
+            setPageLoading(true)
             await exportSlices({
                 picture_name: form.getFieldValue('source')
             })
             messageApi.success('导出成功')
+            setPageLoading(false)
         } else {
             messageApi.error('请先选择图源')
         }
