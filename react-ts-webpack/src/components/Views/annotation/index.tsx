@@ -76,7 +76,6 @@ const AnnotationComponent = () => {
         init()
     }, []);
 
-
     const changeMode = (mode: string) => {
         setMode(mode);
     }
@@ -102,8 +101,6 @@ const AnnotationComponent = () => {
             window.removeEventListener('keydown', keydownAction);
         };
     }, [recArrs]);
-
-
 
     // 添加框图
     const addToRecs = (e: any, curObj: any) => {
@@ -194,11 +191,9 @@ const AnnotationComponent = () => {
                 item.type = 1
             })
             const rec = recArrs[index];
-           
             rec.type = 0;
             dispatch(setSelectedIndex(index))
             curObj.index = index;
-
             return;
         }
     }

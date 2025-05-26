@@ -43,11 +43,12 @@ export const AnnotationShow = (props: Props) => {
         imageRef.current.src = props.imageSrc;
     }, [props.imageSrc])
 
+
     useEffect(() => {
         clearCanvas();
         drawOldRect(recArrs);
         drawSelectedRecs(recArrs);
-    }, [selectedIndex])
+    }, [selectedIndex, recArrs])
 
 
     // 重绘
@@ -57,6 +58,7 @@ export const AnnotationShow = (props: Props) => {
         drawOldRect(recArrs);
         curObj.side = 0
         changeResizeCursor(curObj.side)
+        drawSelectedRecs(recArrs);
     }, [recArrs.length])
 
     useEffect(() => {
@@ -271,7 +273,6 @@ export const AnnotationShow = (props: Props) => {
                 ctx2d.strokeStyle = recArrs[i].color ?? "#1D8CF8";  // 矩形框的线条颜色
                 if (recArrs[i].type === 0) {
                     ctx2d.setLineDash([20, 5])
-                    console.log(recArrs[i].color)
                     ctx2d.strokeStyle = "rgb(255, 0, 0)";  // 矩形框的线条颜色
                 }
                 ctx2d.lineWidth = 2;    // 矩形框的线条宽度
